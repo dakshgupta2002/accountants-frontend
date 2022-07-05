@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allotment Scheme</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <h1>Land Allotment Calculator</h1>
+    <br>
+
+    <div><span>Allotment Date</span> <input type="date" id="allotmentDate" value="2000-01-01"> <br></div>
+
+    <div><span>Amount of Price</span> <input type="number" id="amountPrice" value="100000"> <br></div>
+
+    <div>
+        <span>Type of Property</span>
+        <select id="propertyType">
+            <option value="shop">Shop</option>
+            <option value="booth">Booth</option>
+        </select>
+        <br>
+    </div>
+
+    <div><span>Down Payment (%age)</span> <input id="downPayment" type="number" min="0" max="100" value="25"> <br>
+    </div>
+
+    <div><span>Number of Installments</span> <input id="installmentNumber" min="1" type="number" value="6"> <br> </div>
+
+    <div><span>Rate of Interest (%age)</span> <input type="number" id="rateInterest" value="12.5"> <br> </div>
+
+    <div><span>Penal Interst (%age)</span> <input type="number" id="penalInterest" value="4"> <br> </div>
+
+    <br>
+    <hr><br>
+
+    <div id="payments"></div> <br><br>
+    <button id="addPayment">Add Payment</button>
+    <hr>
+
+    <br><button id="submit">Calculate</button>
+
+    <table id="result">
+
+    </table>
+
+    <hr>
+
+    <script src="./index.js" type="text/javascript"></script>
+</body>
+
+</html>
