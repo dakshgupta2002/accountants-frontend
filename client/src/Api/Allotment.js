@@ -12,4 +12,5 @@ export const CreateAllotment = async (data) => {
 
 export const RemoveAllotment = async (data) => {
     const res = await post("DELETE", "allotment", data)
+    return res;
 }
