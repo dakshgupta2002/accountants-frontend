@@ -9,3 +9,7 @@ export const CreateAllotment = async (data) => {
     const res = await post("POST", "allotment", data);
     return res;
 }
+
+export const RemoveAllotment = async (data) => {
+    const res = await post("DELETE", "allotment", data)
+}

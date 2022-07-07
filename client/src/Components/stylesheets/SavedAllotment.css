@@ -1,0 +1,10 @@
+.savedAllotment{
+    min-width: 400px;
+    padding: 20px;
+}
+
+.savedAllotmentVal{
+    font-size: 16pt;
+    font-weight: 700;
+    text-decoration: underline;
+}

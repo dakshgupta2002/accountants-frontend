@@ -26,7 +26,10 @@ allotmentRouter.route('/')
 
         res.status(200).json(allotment);
     })
-
+    .delete(auth, async (req, res) => {
+        const allotment = await Allotment.findByIdAndDelete(req.body._id);
+        res.status(200).json(allotment);
+    })
 
 
 export default allotmentRouter;
