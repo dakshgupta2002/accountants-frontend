@@ -3,6 +3,8 @@ import { TextField, MenuItem, Button } from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from '../../utils/numberFormat'
+import { CreateAllotment } from "../../Api/Allotment";
+import { toast } from 'react-toastify';
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
@@ -13,7 +15,6 @@ export default function Allotment() {
   const [penalInterest, setPenalInterest] = useState(4);
   const [installmentsNumber, setInstallmentsNumber] = useState(3);
   const [plot, setPlot] = useState("Shop");
-
   const [paymentsHistory, setPaymentsHistory] = useState([]);
 
   const addPayment = () => {
@@ -207,8 +208,24 @@ export default function Allotment() {
     `
   };
 
-  const saveUser = () => {
+  const saveAllotment = async () => {
     //send API call to save all data and payments
+    if (!username || !allotmentDate || !amountPrice || !downPayment || !rateInterest || !penalInterest || !installmentsNumber || !plot){
+      toast.error("Information missing to save")
+    }
+    const res = await CreateAllotment({
+      username,
+      allotmentDate,
+      amountPrice,
+      downPayment,
+      rateInterest,
+      penalInterest,
+      installmentsNumber,
+      plot,
+      payments: paymentsHistory
+    })
+
+    console.log(res);
   }
 
   return (
@@ -217,7 +234,7 @@ export default function Allotment() {
       <h1>Land Allotment Calculator</h1>
       <br /> <br/>
       <div className="buttonContainer">
-        <Button variant="contained" color="secondary" onClick={saveUser}>
+        <Button variant="contained" color="secondary" onClick={saveAllotment}>
           Save user
         </Button>
       </div>

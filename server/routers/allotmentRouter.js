@@ -13,14 +13,14 @@ allotmentRouter.route('*')
 
 allotmentRouter.route('/')
     .get(auth, async (req, res) => {
-        const allotments = await Allotment.find({ userId: req.user._id }).exec();
+        const allotments = await Allotment.find({ userId: req.user.data }).exec();
         res.status(200).json(allotments);
     })
-    
+
     .post(auth, async (req, res) => {
         const { username, allotmentDate, amountPrice, downPayment, rateInterest, penalInterest, installmentsNumber, plot, payments } = req.body;
 
-        const allotment = new Allotment({ username, allotmentDate, amountPrice, downPayment, rateInterest, penalInterest, installmentsNumber, plot, payments });
+        const allotment = new Allotment({ userId: req.user.data, username, allotmentDate, amountPrice, downPayment, rateInterest, penalInterest, installmentsNumber, plot, payments });
 
         await allotment.save();
 
