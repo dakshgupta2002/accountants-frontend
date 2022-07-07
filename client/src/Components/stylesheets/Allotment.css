@@ -11,3 +11,14 @@
     width: 90%;
     max-width: 450px;
 }
+
+.payments{
+    width: 100%;
+}
+
+.paymentLog{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}

@@ -15,7 +15,7 @@ export default function Home() {
 
     <>
       <Header />
-
+      <h1>The Accountants</h1>
     </>
 
   )

@@ -1,17 +1,29 @@
 import React, { useState } from "react";
-import { TextField, MenuItem } from "@mui/material";
+import { TextField, MenuItem, Button } from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
   const [date, setDate] = useState("2000-01-01");
-  const [amountPrice, setAmountPrice] = useState(0);
+  const [amountPrice, setAmountPrice] = useState(100000);
   const [downPayment, setDownPayment] = useState(25);
   const [rateInterest, setRateInterest] = useState(12.5);
   const [penalInterest, setPenalInterest] = useState(4);
   const [installmentsNumber, setInstallmentsNumber] = useState(3);
-  const [plot, setPlot] = useState('Shop')
+  const [plot, setPlot] = useState("Shop");
+
+  const [paymentsHistory, setPaymentsHistory] = useState([]);
+
+  const addPayment = () => {
+    setPaymentsHistory([
+      ...paymentsHistory,
+      {
+        paymentDate: "",
+        paymentAmount: "",
+      },
+    ]);
+  };
 
   return (
     <div className="allotment">
@@ -97,17 +109,62 @@ export default function Allotment() {
           margin="normal"
           label="Type of plot"
         >
-          <MenuItem key={1} value="Shop"> Shop </MenuItem>
-          <MenuItem key={2} value="Booth"> Booth </MenuItem>
+          <MenuItem key={1} value="Shop">
+            {" "}
+            Shop{" "}
+          </MenuItem>
+          <MenuItem key={2} value="Booth">
+            {" "}
+            Booth{" "}
+          </MenuItem>
         </TextField>
-
       </div>
 
+      <div className="payments">
+        {paymentsHistory.map((paymentLog, index) => {
+          return (
+            <div className="paymentLog" key={index}>
+              <span>Payment {index + 1}</span>
+              <TextField
+                type="date"
+                InputLabelProps={{shrink: true}}
+                label="Payment Date"
+                margin="normal"
+                value={paymentLog?.paymentDate}
+                onChange={(e) => {
+                  let updatedPaymentHistory = paymentsHistory;
+                  updatedPaymentHistory[index].paymentDate = e.target.value;
+                  console.log(updatedPaymentHistory);
+                  setPaymentsHistory(updatedPaymentHistory);
+                }}
+              />
 
-      <div id="payments"></div> <br />
-      <button id="addPayment">Add Payment</button>
-      <hr />
+              <TextField
+                type="number"
+                InputLabelProps={{shrink: true}}
+                label="Payment Amount"
+                margin="normal"
+                value={paymentLog.paymentAmount}
+                onChange={(e) => {
+                  let updatedPaymentHistory = paymentsHistory;
+                  updatedPaymentHistory[index].paymentAmount = e.target.value;
+                  setPaymentsHistory(updatedPaymentHistory);
+                  setTimeout( () => {
+                    console.log(paymentsHistory);
+                  }, 100)
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <Button variant="contained" color="secondary" onClick={addPayment}>
+        Add Payment
+      </Button>
+
       <br />
+
       <button id="submit">Calculate</button>
       <table id="result"></table>
     </div>
