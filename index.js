@@ -1,36 +1,4 @@
 
-
-const resetResult = () => {
-    document.getElementById('result').innerHTML = `
-    <tr>
-        <th>Year</th>
-        <th>Principle Amount</th>
-        <th>Interest Amount</th>
-        <th>Penal Amount</th>
-    </tr>
-    `;
-}
-
-const addResult = (displayDate, numOfDays, principleAmount, interestAmount, penalAmount, className) => {
-    if (className === 'paymentClass') {
-        document.getElementById('result').innerHTML += ` 
-            <h1>
-                Payment was made!
-            </h1>
-        `
-    }
-    let entry = `
-    <tr class=${className}>
-        <td>${displayDate.toLocaleDateString('en-GB')}, ${Math.round(numOfDays)}</td>
-        <td>${seperator(Math.round((principleAmount + Number.EPSILON) * 100) / 100)}</td>
-        <td>${seperator(Math.round((interestAmount + Number.EPSILON) * 100) / 100)}</td>
-        <td>${seperator(Math.round((penalAmount + Number.EPSILON) * 100) / 100)}</td>
-    </tr>
-`
-    document.getElementById('result').innerHTML += entry;
-}
-
-
 document.getElementById('submit').addEventListener('click', () => {
 
     //calculate the installments and payments net 
