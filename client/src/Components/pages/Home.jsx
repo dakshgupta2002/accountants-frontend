@@ -15,8 +15,7 @@ export default function Home() {
 
     <>
       <Header />
-      HOME
-      {localStorage.getItem('token')}
+
     </>
 
   )

@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {UserLogin} from '../../Api/User';
+import { toast } from 'react-toastify/dist/react-toastify.cjs.production.min';
 
 function Copyright(props) {
   return (
@@ -49,10 +50,11 @@ export default function Login() {
         });
 
         if(res.status === 200){
-            localStorage.setItem('token', res.userFound.token);
+            localStorage.setItem('token', res.token);
             navigate('/');
         }else{
             alert(res.msg);
+            toast.error("Invalid credentials.")
         }
         
       

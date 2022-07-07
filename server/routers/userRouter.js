@@ -121,12 +121,11 @@ userRouter.route("/register/create")
 		});
 
 		const token = generateToken(user._id);
-		user.token = token;
 
 		user.save();
 
 		res.status(200).json({
-			user,
+			token,
 			"status": 200
 		});
 	})
@@ -146,11 +145,10 @@ userRouter.route("/login")
 			});
 		}
 		const token = generateToken(userFound._id);
-		userFound.token = token;
 		userFound.save();
 
 		return res.json({
-			userFound,
+			token,
 			"status": 200
 		});
 

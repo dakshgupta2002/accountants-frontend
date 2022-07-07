@@ -1,0 +1,13 @@
+.allotment{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formData{
+    width: 90%;
+    max-width: 450px;
+}

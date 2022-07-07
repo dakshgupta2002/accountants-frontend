@@ -54,7 +54,7 @@ export default function Create() {
         });
         if (res.status === 200) {
             toast.success("User has been created");
-            localStorage.setItem('token', res.user.token);
+            localStorage.setItem('token', res.token);
             navigate('/');
         } else {
             toast.error("Email already exists");
