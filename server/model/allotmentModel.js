@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import paymentSchema from './paymentSchema';
+import paymentSchema from './paymentSchema.js';
 const { Schema } = mongoose;
 
 const allotmentSchema = new Schema({
-    email: {
+    userId: {
         type: String,
         required: true
     },
@@ -20,4 +20,5 @@ const allotmentSchema = new Schema({
     }
 })
 
-export default mongoose.model('Allotment', allotmentSchema);
+const Allotment = mongoose.model('Allotment', allotmentSchema);
+export default Allotment;
