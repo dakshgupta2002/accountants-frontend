@@ -1,23 +1,19 @@
-import 'dotenv/config'
 import express from 'express';
-import './config/db.js';
-import { auth } from './middlewares/auth.js';
 import cors from 'cors';
+import 'dotenv/config'
+import './config/db.js';
 
-import userRouter from './routers/userRouter.js';
-
+const PORT = process.env.PORT;
 const app = express();
 app.options('*', cors());
 app.use(express.json());
 
+import userRouter from './routers/userRouter.js';
+
 //register or login a new user
 app.use('/user', userRouter);
 
-//if user has token present, no need to ask for login 
-app.use(auth);
 
-
-
-app.listen('3333', () => {
-    console.log("Hello Backend");
+app.listen(PORT, () => {
+    console.log(`Hello Backend on port ${PORT}`);
 });

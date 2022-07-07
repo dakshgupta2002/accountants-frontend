@@ -1,4 +1,4 @@
-const base = "http://localhost:3333";
+const base = "http://localhost:8000";
 
 
 export const post = async (method, url, data = null) => {

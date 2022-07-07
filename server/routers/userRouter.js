@@ -15,7 +15,7 @@ userRouter.route('*')
 		res.header("Content-Type", "application/json");
 		next();
 	})
-	
+
 userRouter.route('/register')
 	.post(async (req, res) => {
 		//first save user email in userVerify 
@@ -49,7 +49,7 @@ userRouter.route('/register')
 		});
 
 		// 2) send otp to the email
-		const auth = await Auth(email, process.env.COPMPANY_NAME);
+		const auth = await Auth(email, process.env.COMPANY_NAME);
 
 		// 3) encrypt the otp and store in database
 		const otp = auth.OTP;
@@ -95,8 +95,8 @@ userRouter.route('/register/verify')
 
 userRouter.route("/register/create")
 	.post(async (req, res) => {
-		const { name, email, password, institute } = req.body;
-		if (!name || !email || !password || !institute) {
+		const { email, password } = req.body;
+		if (!email || !password) {
 			res.status(400).json({
 				"msg": "Please provide all the details",
 				"status": 400
@@ -116,10 +116,8 @@ userRouter.route("/register/create")
 		const hashedPassword = bcrypt.hashSync(password, 10);
 
 		const user = new User({
-			name: name,
 			email: email,
-			password: hashedPassword,
-			institute: institute
+			password: hashedPassword
 		});
 
 		const token = generateToken(user._id);

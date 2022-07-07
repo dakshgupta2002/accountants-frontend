@@ -1,6 +1,5 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import Footer from '../Footer';
 import Header from '../Header';
 
 export default function Home() {
@@ -18,7 +17,6 @@ export default function Home() {
       <Header />
       HOME
       {localStorage.getItem('token')}
-      <Footer />
     </>
 
   )
