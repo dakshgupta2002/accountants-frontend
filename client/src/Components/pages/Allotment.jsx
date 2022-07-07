@@ -207,11 +207,21 @@ export default function Allotment() {
     `
   };
 
+  const saveUser = () => {
+    //send API call to save all data and payments
+  }
+
   return (
     <div className="allotment">
       <Header />
       <h1>Land Allotment Calculator</h1>
-      <br />
+      <br /> <br/>
+      <div className="buttonContainer">
+        <Button variant="contained" color="secondary" onClick={saveUser}>
+          Save user
+        </Button>
+      </div>
+      <br/>
       <div className="formData">
         <TextField
           label="Username"
