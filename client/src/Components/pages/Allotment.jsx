@@ -120,6 +120,13 @@ export default function Allotment() {
         </TextField>
       </div>
 
+
+      <div className="addPaymentButton">
+        <Button variant="contained" color="secondary" onClick={addPayment}>
+          Add Payment
+        </Button>
+      </div>
+
       <div className="payments">
         {paymentsHistory.map((paymentLog, index) => {
           return (
@@ -132,9 +139,8 @@ export default function Allotment() {
                 margin="normal"
                 value={paymentLog?.paymentDate}
                 onChange={(e) => {
-                  let updatedPaymentHistory = paymentsHistory;
+                  let updatedPaymentHistory = [...paymentsHistory];
                   updatedPaymentHistory[index].paymentDate = e.target.value;
-                  console.log(updatedPaymentHistory);
                   setPaymentsHistory(updatedPaymentHistory);
                 }}
               />
@@ -146,12 +152,9 @@ export default function Allotment() {
                 margin="normal"
                 value={paymentLog.paymentAmount}
                 onChange={(e) => {
-                  let updatedPaymentHistory = paymentsHistory;
+                  let updatedPaymentHistory = [...paymentsHistory];
                   updatedPaymentHistory[index].paymentAmount = e.target.value;
                   setPaymentsHistory(updatedPaymentHistory);
-                  setTimeout( () => {
-                    console.log(paymentsHistory);
-                  }, 100)
                 }}
               />
             </div>
@@ -159,9 +162,6 @@ export default function Allotment() {
         })}
       </div>
 
-      <Button variant="contained" color="secondary" onClick={addPayment}>
-        Add Payment
-      </Button>
 
       <br />
 

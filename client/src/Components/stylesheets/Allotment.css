@@ -8,12 +8,19 @@
 }
 
 .formData{
-    width: 90%;
+    width: 95%;
     max-width: 450px;
 }
 
+.addPaymentButton{
+    width: 95%;
+    max-width: 900px;
+    display: flex;
+    justify-content: right;
+    margin: 40px 0px 10px 0px;
+}
 .payments{
-    width: 100%;
+    width: 95%;
 }
 
 .paymentLog{
