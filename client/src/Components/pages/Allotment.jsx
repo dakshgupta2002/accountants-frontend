@@ -1,17 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  TextField,
-  MenuItem,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  Paper,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { TextField, MenuItem, Button, Grid } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
@@ -30,13 +19,15 @@ export default function Allotment() {
   const [plot, setPlot] = useState("Shop");
   const [paymentsHistory, setPaymentsHistory] = useState([]);
   const [fetchSaved, setFetchSaved] = useState(0);
-  useEffect(() => {
-    console.log(paymentsHistory);
-  }, [paymentsHistory]);
+  const [installments, setInstallments] = useState([]);
+
+  let principleTimespan = [];
+
   const addPayment = () => {
     setPaymentsHistory([
       ...paymentsHistory,
       {
+        id: paymentsHistory.length,
         paymentDate: "",
         paymentAmount: "",
       },
@@ -44,14 +35,7 @@ export default function Allotment() {
   };
 
   const resetResult = () => {
-    document.getElementById("result").innerHTML = `
-    <tr>
-        <th>Year</th>
-        <th>Principle Amount</th>
-        <th>Interest Amount</th>
-        <th>Penal Amount</th>
-    </tr>
-    `;
+    principleTimespan = [];
   };
 
   const addResult = (
@@ -62,25 +46,17 @@ export default function Allotment() {
     penalAmount,
     className
   ) => {
-    if (className === "paymentClass") {
-      document.getElementById("result").innerHTML += ` 
-            <span>
-                Payment was made!
-            </span>
-        `;
-    }
-    let entry = `
-      <tr class=${className}>
-          <td>${displayDate.toLocaleDateString("en-GB")}, ${Math.round(
-      numOfDays
-    )}</td>
-          <td>${seperator(round(principleAmount))}</td>
-          <td>${seperator(round(interestAmount))}</td>
-          <td>${seperator(round(penalAmount))}</td>
-      </tr>
-    `;
-    document.getElementById("result").innerHTML += entry;
+    principleTimespan.push({
+      id: Math.ceil(Math.random()*1000),
+      date: displayDate.toLocaleDateString("en-GB"),
+      days: Math.round(numOfDays),
+      principle: seperator(round(principleAmount)),
+      interest: seperator(round(interestAmount)),
+      penal: seperator(round(penalAmount)),
+      // paymentClass: !!className,
+    });
   };
+
   const calculate = () => {
     resetResult();
 
@@ -135,8 +111,9 @@ export default function Allotment() {
           principleAmount,
           interestAmount,
           penalAmount,
-          null
+          ""
         );
+        
         principleAmount += interestAmount + penalAmount;
       } else {
         //else add interest but first check if payment was made
@@ -164,7 +141,7 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
 
           //adjust the payment made in the principle and interest
@@ -215,7 +192,7 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
 
           principleAmount += interestAmount + penalAmount;
@@ -240,8 +217,9 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
+          
           /////////////////////////////////////////////////////////////////////////////////////////////////////////////
           //adjust the payment made in the principle and interest
           let thisPaymentAmount = paymentsHistory[currentPaymentNum][1];
@@ -263,6 +241,7 @@ export default function Allotment() {
             penalAmount,
             "paymentClass"
           );
+          
           principleAmount += interestAmount + penalAmount;
         } else {
           //console.log("No payment was made in this due date, calculating interest")
@@ -283,8 +262,9 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
+          
           principleAmount += interestAmount + penalAmount;
         }
       }
@@ -293,7 +273,6 @@ export default function Allotment() {
         currentInstallmentNum -= 1;
       }
     }
-
     document.getElementById("result").innerHTML += `
         <h1>
             Net outstanding dues = ${seperator(
@@ -307,7 +286,9 @@ export default function Allotment() {
             )}
         </h1>
     `;
+  
   };
+
 
   const saveAllotment = async () => {
     //send API call to save all data and payments
@@ -508,79 +489,106 @@ export default function Allotment() {
         </Button>
       </div>
 
-      <TableContainer component={Paper}>
-        {/* The installments as they should be paid*/}
-        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
-          Installments Schedule{" "}
-        </Typography>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Installment Number</TableCell>
-              <TableCell align="right">Date</TableCell>
-              <TableCell align="right">Principle</TableCell>
-              <TableCell align="right">Interest</TableCell>
-            </TableRow>
-          </TableHead>
+      {/* The installments as they should be paid*/}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Installments Schedule
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "40vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[]}
+            rows={[]}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
+      </Grid>
 
-          <TableBody></TableBody>
-        </Table>
-        <br />
-        <br />
-        <br />
+      {/* Payments Displayed for convinience */}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Payments History
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "50vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[
+              { field: "paymentDate", headerName: "Payment Data", width: 200 },
+              { field: "paymentAmount", headerName: "Payment Amount", width: 300 },
+            ]}
+            rows={paymentsHistory}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
+      </Grid>
 
-        {/* Payments Displayed for convinience */}
-        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
-          Payments History{" "}
-        </Typography>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Payment Number</TableCell>
-              <TableCell align="right">Date</TableCell>
-              <TableCell align="right">Amount</TableCell>
-            </TableRow>
-          </TableHead>
+      {/* The interest calculation */}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Interest and Penalty
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "80vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[
+              { field: "date", headerName: "Date", width: 150},
+              { field: "days", headerName: "Days" , width: 100},
+              { field: "principle", headerName: "Principle Amount" , width: 200},
+              { field: "interest", headerName: "Interest" , width: 200},
+              { field: "penal", headerName: "Penality", width: 200 }
+            ]}
+            rows={principleTimespan}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
 
-          <TableBody>
-            {paymentsHistory.map((payment, index) => {
-              return (
-                <TableRow
-                  key={index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    Payment {index + 1}
-                  </TableCell>
-                  <TableCell align="right">{payment.paymentDate}</TableCell>
-                  <TableCell align="right">{payment.paymentAmount}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <br />
-        <br />
-        <br />
-
-        {/* The interest calculation */}
-        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
-          Interest and Penalty{" "}
-        </Typography>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Days</TableCell>
-              <TableCell align="right">Principle</TableCell>
-              <TableCell align="right">Interest</TableCell>
-              <TableCell align="right">Penalty</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody></TableBody>
-        </Table>
-      </TableContainer>
+        <div id="result" />
+      </Grid>
     </div>
   );
 }

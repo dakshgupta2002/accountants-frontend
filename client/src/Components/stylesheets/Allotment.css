@@ -32,7 +32,7 @@
 .tablesContainer{
     width: 97.5%;
     max-width: 750px;
-    overflow: scroll;
+    overflow-x: scroll;
     margin-bottom: 20vh;
 }
 .tablesContainer::-webkit-scrollbar{
@@ -49,4 +49,10 @@ tr, th, td{
 
 .paymentClass{
     background-color: yellow;
+}
+
+.header{
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
 }
