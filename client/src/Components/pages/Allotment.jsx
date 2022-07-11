@@ -1,5 +1,17 @@
-import React, { useState } from "react";
-import { TextField, MenuItem, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  TextField,
+  MenuItem,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  Paper,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
@@ -18,7 +30,9 @@ export default function Allotment() {
   const [plot, setPlot] = useState("Shop");
   const [paymentsHistory, setPaymentsHistory] = useState([]);
   const [fetchSaved, setFetchSaved] = useState(0);
-
+  useEffect(() => {
+    console.log(paymentsHistory);
+  }, [paymentsHistory]);
   const addPayment = () => {
     setPaymentsHistory([
       ...paymentsHistory,
@@ -321,8 +335,8 @@ export default function Allotment() {
       payments: paymentsHistory,
     });
 
-    toast.success("User saved for future use.")
-    setFetchSaved(fetchSaved+1);
+    toast.success("User saved for future use.");
+    setFetchSaved(fetchSaved + 1);
   };
 
   return (
@@ -330,7 +344,7 @@ export default function Allotment() {
       <Header />
 
       <h1>Land Allotment Calculator</h1>
-      
+
       <div className="buttonContainer">
         <SavedAllotments
           setUsername={setUsername}
@@ -346,9 +360,14 @@ export default function Allotment() {
           setFetchSaved={setFetchSaved}
           resetResult={resetResult}
         />
-        <Button variant="contained" color="success" sx={{mx: "10px"}} onClick={saveAllotment}>
+        <Button
+          variant="contained"
+          color="success"
+          sx={{ mx: "10px" }}
+          onClick={saveAllotment}
+        >
           Save user
-        </Button> 
+        </Button>
       </div>
       <br />
       <div className="formData">
@@ -488,7 +507,80 @@ export default function Allotment() {
           Calculate
         </Button>
       </div>
-      <table id="result"></table>
+
+      <TableContainer component={Paper}>
+        {/* The installments as they should be paid*/}
+        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
+          Installments Schedule{" "}
+        </Typography>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Installment Number</TableCell>
+              <TableCell align="right">Date</TableCell>
+              <TableCell align="right">Principle</TableCell>
+              <TableCell align="right">Interest</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody></TableBody>
+        </Table>
+        <br />
+        <br />
+        <br />
+
+        {/* Payments Displayed for convinience */}
+        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
+          Payments History{" "}
+        </Typography>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Payment Number</TableCell>
+              <TableCell align="right">Date</TableCell>
+              <TableCell align="right">Amount</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {paymentsHistory.map((payment, index) => {
+              return (
+                <TableRow
+                  key={index}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    Payment {index + 1}
+                  </TableCell>
+                  <TableCell align="right">{payment.paymentDate}</TableCell>
+                  <TableCell align="right">{payment.paymentAmount}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+        <br />
+        <br />
+        <br />
+
+        {/* The interest calculation */}
+        <Typography sx={{ flex: "1 1 100%" }} variant="h6" component="div">
+          Interest and Penalty{" "}
+        </Typography>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell align="right">Days</TableCell>
+              <TableCell align="right">Principle</TableCell>
+              <TableCell align="right">Interest</TableCell>
+              <TableCell align="right">Penalty</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody></TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }
