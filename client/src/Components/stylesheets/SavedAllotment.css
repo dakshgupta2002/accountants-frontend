@@ -1,5 +1,6 @@
 .savedAllotment{
-    min-width: 400px;
+    width: 70vw;
+    max-width: 600px;
     padding: 20px;
 }
 

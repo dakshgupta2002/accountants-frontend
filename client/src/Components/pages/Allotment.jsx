@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { TextField, MenuItem, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { TextField, MenuItem, Button, Grid } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
@@ -18,28 +19,64 @@ export default function Allotment() {
   const [plot, setPlot] = useState("Shop");
   const [paymentsHistory, setPaymentsHistory] = useState([]);
   const [fetchSaved, setFetchSaved] = useState(0);
+  const [installmentsSchedule, setInstallmentsSchedule] = useState([]);
+  const [principleTimespan, setPrincipleTimespan] = useState([]);
+  let principleTimespanTemp = [];
+  let installmentsScheduleTemp = [];
 
   const addPayment = () => {
     setPaymentsHistory([
       ...paymentsHistory,
       {
+        id: paymentsHistory.length,
         paymentDate: "",
         paymentAmount: "",
       },
     ]);
   };
 
-  const resetResult = () => {
-    document.getElementById("result").innerHTML = `
-    <tr>
-        <th>Year</th>
-        <th>Principle Amount</th>
-        <th>Interest Amount</th>
-        <th>Penal Amount</th>
-    </tr>
-    `;
+  const scheduleInstallmentsDisplay = () => {
+    setInstallmentsSchedule([]);
+    installmentsScheduleTemp=[];
+
+    let principle = amountPrice * (1 - downPayment / 100),
+      installmentValue =
+        (amountPrice * (1 - downPayment / 100)) / installmentsNumber,
+      interest = 0,
+      beginDate = new Date(allotmentDate),
+      currentDate = new Date(allotmentDate),
+      numOfDays = 0;
+
+    for (let i = 0; i < installmentsNumber; i++) {
+      currentDate.setMonth(currentDate.getMonth() + 6);
+      numOfDays =
+        (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
+      interest = (((principle * rateInterest) / 100) * numOfDays) / 365;
+
+      installmentsScheduleTemp.push({
+        id: Math.ceil(Math.random() * 1000),
+        installmentsNumber: i + 1,
+        date: currentDate.toLocaleDateString("en-GB"),
+        amount: seperator(round(principle)),
+        interest: seperator(round(interest)),
+        total: seperator(round(installmentValue + interest)),
+      });
+      principle -= installmentValue;
+    }
+    setInstallmentsSchedule(installmentsScheduleTemp);
   };
 
+  const resetResult = () => {
+    document.getElementById("result").innerHTML = "";
+    principleTimespanTemp = [];
+    setPrincipleTimespan([]);
+    installmentsScheduleTemp=[];
+    setInstallmentsSchedule([]);
+  };
+
+  useEffect( () => {
+    console.log(principleTimespan)
+  }, [principleTimespan])
   const addResult = (
     displayDate,
     numOfDays,
@@ -48,38 +85,32 @@ export default function Allotment() {
     penalAmount,
     className
   ) => {
-    if (className === "paymentClass") {
-      document.getElementById("result").innerHTML += ` 
-            <span>
-                Payment was made!
-            </span>
-        `;
-    }
-    let entry = `
-      <tr class=${className}>
-          <td>${displayDate.toLocaleDateString("en-GB")}, ${Math.round(
-      numOfDays
-    )}</td>
-          <td>${seperator(round(principleAmount))}</td>
-          <td>${seperator(round(interestAmount))}</td>
-          <td>${seperator(round(penalAmount))}</td>
-      </tr>
-    `;
-    document.getElementById("result").innerHTML += entry;
+    principleTimespanTemp.push({
+      id: Math.ceil(Math.random() * 1000),
+      date: displayDate.toLocaleDateString("en-GB"),
+      days: Math.round(numOfDays),
+      principle: seperator(round(principleAmount)),
+      interest: seperator(round(interestAmount)),
+      penal: seperator(round(penalAmount)),
+      total: seperator(round(principleAmount + interestAmount + penalAmount)),
+    });
   };
+
   const calculate = () => {
     resetResult();
-
+    scheduleInstallmentsDisplay();
     //calculate the installments and payments net
     let principleAmount = amountPrice * (1 - downPayment / 100);
     let penalAmount, interestAmount;
 
-    let beginDate; //date from which interest begins
-    let currentDate = new Date(allotmentDate); //date upto which due is calculated
-    let today = new Date().getTime();
-    let currentPaymentNum = 0;
-    let currentInstallmentNum = installmentsNumber;
+    let beginDate, //date from which interest begins
+      currentDate = new Date(allotmentDate), //date upto which due is calculated
+      today = new Date().getTime(),
+      currentPaymentNum = 0,
+      currentInstallmentNum = installmentsNumber;
+
     for (let i = 0; i < 100; i++) {
+      //maximum number of years there can be
       //increment currentDate by 6 or 12 months (installment)
       beginDate = new Date(currentDate);
       if (currentInstallmentNum > 0) {
@@ -89,12 +120,10 @@ export default function Allotment() {
         currentInstallmentNum -= 1;
       } else {
         //add 12 months
-        //console.log("Yearly compound interest beginning")
         currentDate.setFullYear(currentDate.getFullYear() + 1);
         currentDate.setDate(1);
       }
 
-      //console.log("Interest from", beginDate.toLocaleDateString(), "to", currentDate.toLocaleDateString());
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       if (currentDate.getTime() > today) {
@@ -121,7 +150,7 @@ export default function Allotment() {
           principleAmount,
           interestAmount,
           penalAmount,
-          null
+          ""
         );
         principleAmount += interestAmount + penalAmount;
       } else {
@@ -131,7 +160,6 @@ export default function Allotment() {
         );
 
         if (paymentDate.getTime() <= currentDate.getTime()) {
-          //console.log("Payment was made before or on time")
           let numOfDays =
             (paymentDate.getTime() - beginDate.getTime()) /
             (1000 * 60 * 60 * 24);
@@ -150,13 +178,13 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
 
           //adjust the payment made in the principle and interest
           let thisPaymentAmount =
             paymentsHistory[currentPaymentNum].paymentAmount;
-          // console.log(installmentNumber, interestAmount, penalAmount, principleAmount)
+
           if (thisPaymentAmount >= penalAmount) {
             thisPaymentAmount -= penalAmount;
             penalAmount = 0;
@@ -172,6 +200,7 @@ export default function Allotment() {
             interestAmount -= thisPaymentAmount;
             thisPaymentAmount = 0;
           }
+
           principleAmount += penalAmount + interestAmount - thisPaymentAmount;
           currentPaymentNum += 1;
           addResult(
@@ -201,7 +230,7 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
 
           principleAmount += interestAmount + penalAmount;
@@ -211,9 +240,7 @@ export default function Allotment() {
             (1000 * 60 * 60 * 24) <=
             10
         ) {
-          // within 10 days
           //if made within 10 days, then no penalty and interest of 6 mos
-          //console.log("Payment was made within the warning time")
           penalAmount = 0;
           const numOfDays =
             (currentDate.getTime() - beginDate.getTime()) /
@@ -226,8 +253,9 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
+
           /////////////////////////////////////////////////////////////////////////////////////////////////////////////
           //adjust the payment made in the principle and interest
           let thisPaymentAmount = paymentsHistory[currentPaymentNum][1];
@@ -249,6 +277,7 @@ export default function Allotment() {
             penalAmount,
             "paymentClass"
           );
+
           principleAmount += interestAmount + penalAmount;
         } else {
           //console.log("No payment was made in this due date, calculating interest")
@@ -269,8 +298,9 @@ export default function Allotment() {
             principleAmount,
             interestAmount,
             penalAmount,
-            null
+            ""
           );
+
           principleAmount += interestAmount + penalAmount;
         }
       }
@@ -280,14 +310,14 @@ export default function Allotment() {
       }
     }
 
+    setPrincipleTimespan(principleTimespanTemp);
     document.getElementById("result").innerHTML += `
         <h1>
             Net outstanding dues = ${seperator(
               Math.round(
                 (principleAmount +
                   interestAmount +
-                  penalAmount +
-                  Number.EPSILON) *
+                  penalAmount) *
                   100
               ) / 100
             )}
@@ -321,8 +351,8 @@ export default function Allotment() {
       payments: paymentsHistory,
     });
 
-    toast.success("User saved for future use.")
-    setFetchSaved(fetchSaved+1);
+    toast.success("User saved for future use.");
+    setFetchSaved(fetchSaved + 1);
   };
 
   return (
@@ -330,7 +360,7 @@ export default function Allotment() {
       <Header />
 
       <h1>Land Allotment Calculator</h1>
-      
+
       <div className="buttonContainer">
         <SavedAllotments
           setUsername={setUsername}
@@ -346,9 +376,14 @@ export default function Allotment() {
           setFetchSaved={setFetchSaved}
           resetResult={resetResult}
         />
-        <Button variant="contained" color="success" sx={{mx: "10px"}} onClick={saveAllotment}>
+        <Button
+          variant="contained"
+          color="success"
+          sx={{ mx: "10px" }}
+          onClick={saveAllotment}
+        >
           Save user
-        </Button> 
+        </Button>
       </div>
       <br />
       <div className="formData">
@@ -488,7 +523,135 @@ export default function Allotment() {
           Calculate
         </Button>
       </div>
-      <table id="result"></table>
+
+      {/* The installments as they should be paid*/}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Installments Schedule
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "60vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[
+              {
+                field: "installmentNumber",
+                headerName: "Installment",
+                width: 100,
+              },
+              { field: "date", headerName: "Date", width: 150 },
+              { field: "amount", headerName: "Amount", width: 250 },
+              { field: "interest", headerName: "Interest", width: 150 },
+              { field: "total", headerName: "Deposit", width: 300 },
+            ]}
+            rows={installmentsSchedule}
+            pageSize={10}
+            getRowId={() => {
+              return Math.ceil(Math.random() * 1000);
+            }}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
+      </Grid>
+
+      {/* Payments Displayed for convinience */}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Payments History
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "60vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[
+              { field: "paymentDate", headerName: "Payment Data", width: 200 },
+              {
+                field: "paymentAmount",
+                headerName: "Payment Amount",
+                width: 300,
+              },
+            ]}
+            rows={paymentsHistory}
+            getRowId={() => {
+              return Math.ceil(Math.random() * 1000);
+            }}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
+      </Grid>
+
+      {/* The interest calculation */}
+      <Grid
+        direction="row"
+        container
+        justifyContent="center"
+        sx={{ marginTop: "10vh" }}
+      >
+        <Grid item className="header" lg={6}>
+          Interest and Penalty
+        </Grid>
+        <Grid
+          item
+          lg={11.5}
+          sx={{
+            overflowX: "scroll",
+            marginTop: "3vh",
+            height: "80vh",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            columns={[
+              { field: "date", headerName: "Date", width: 150 },
+              { field: "days", headerName: "Days", width: 100 },
+              {
+                field: "principle",
+                headerName: "Principle Amount",
+                width: 200,
+              },
+              { field: "interest", headerName: "Interest", width: 200 },
+              { field: "penal", headerName: "Penality", width: 200 },
+              { field: "total", headerName: "Total", width: 300 },
+            ]}
+            rows={principleTimespan}
+            getRowId={() => {
+              return Math.ceil(Math.random() * 1000);
+            }}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        </Grid>
+
+        <div id="result" />
+      </Grid>
     </div>
   );
 }
