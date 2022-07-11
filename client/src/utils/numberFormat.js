@@ -5,5 +5,5 @@ export function seperator(numb) {
 }
 
 export function round(numb){
-    return Math.round((numb + Number.EPSILON) * 100) / 100;
+    return Math.round((numb) * 100) / 100;
 }
