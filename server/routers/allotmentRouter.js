@@ -26,6 +26,20 @@ allotmentRouter.route('/')
 
         res.status(200).json(allotment);
     })
+
+    .put(auth, async (req, res) => {
+        const data = req.body;
+        const _id = req.body._id;
+        await Allotment.findByIdAndUpdate( {_id}, data, (err, allotment) => {
+            if (err){
+                res.status(400);
+                return;
+            }
+
+            res.status(203).json(allotment);
+        }).clone()
+    })
+
     .delete(auth, async (req, res) => {
         const allotment = await Allotment.findByIdAndDelete(req.body._id);
         res.status(200).json(allotment);
