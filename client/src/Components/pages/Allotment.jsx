@@ -20,8 +20,8 @@ export default function Allotment() {
   const [paymentsHistory, setPaymentsHistory] = useState([]);
   const [fetchSaved, setFetchSaved] = useState(0);
   const [installments, setInstallments] = useState([]);
-
-  let principleTimespan = [];
+  const [principleTimespan, setPrincipleTimespan] = useState([]);
+  let principleTimespanTemp = [];
 
   const addPayment = () => {
     setPaymentsHistory([
@@ -34,8 +34,19 @@ export default function Allotment() {
     ]);
   };
 
+  const installmentsSchedule = () => {
+    setInstallments([]);
+    let principle = amountPrice*(1-downPayment/100),  
+    rateIn=rateInterest,
+    ratePe=penalInterest,
+    interest=0, penal=0;
+
+    for( let i=0; i<installmentsNumber; i++){
+
+    }
+  }
   const resetResult = () => {
-    principleTimespan = [];
+    principleTimespanTemp = [];
   };
 
   const addResult = (
@@ -46,7 +57,7 @@ export default function Allotment() {
     penalAmount,
     className
   ) => {
-    principleTimespan.push({
+    principleTimespanTemp.push({
       id: Math.ceil(Math.random()*1000),
       date: displayDate.toLocaleDateString("en-GB"),
       days: Math.round(numOfDays),
@@ -59,7 +70,7 @@ export default function Allotment() {
 
   const calculate = () => {
     resetResult();
-
+    installmentsSchedule();
     //calculate the installments and payments net
     let principleAmount = amountPrice * (1 - downPayment / 100);
     let penalAmount, interestAmount;
@@ -273,6 +284,8 @@ export default function Allotment() {
         currentInstallmentNum -= 1;
       }
     }
+
+    setPrincipleTimespan(principleTimespanTemp)
     document.getElementById("result").innerHTML += `
         <h1>
             Net outstanding dues = ${seperator(
@@ -489,13 +502,14 @@ export default function Allotment() {
         </Button>
       </div>
 
+
       {/* The installments as they should be paid*/}
       <Grid
         direction="row"
         container
         justifyContent="center"
         sx={{ marginTop: "10vh" }}
-      >
+        >
         <Grid item className="header" lg={6}>
           Installments Schedule
         </Grid>
@@ -510,8 +524,12 @@ export default function Allotment() {
           }}
         >
           <DataGrid
-            columns={[]}
-            rows={[]}
+            columns={[
+              {field: 'installmentNumber', headerName: 'Installment', width: 100},
+              {field: 'date', headerName: 'Installment Date', width: 100},
+              {field: 'amount', headerName:'Installment Amount', width: 100}
+            ]}
+            rows={installments}
             pageSize={10}
             rowsPerPageOptions={[10]}
             checkboxSelection
@@ -525,7 +543,7 @@ export default function Allotment() {
         container
         justifyContent="center"
         sx={{ marginTop: "10vh" }}
-      >
+        >
         <Grid item className="header" lg={6}>
           Payments History
         </Grid>
@@ -548,7 +566,7 @@ export default function Allotment() {
             pageSize={10}
             rowsPerPageOptions={[10]}
             checkboxSelection
-          />
+            />
         </Grid>
       </Grid>
 
