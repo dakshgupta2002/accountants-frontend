@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { TextField, MenuItem, Button, Grid } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useState } from "react";
+import { TextField, MenuItem, Button, Tabs, Tab } from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
-import { CreateAllotment } from "../../Api/Allotment";
+import { CreateAllotment, UpdateAllotment } from "../../Api/Allotment";
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
+import InstallmentCalculation from "../elements/InstallmentCalculation";
+import InterestCalculation from "../elements/InterestCalculation";
+import PaymentsCalculation from "../elements/PaymentsCalculation";
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
@@ -21,6 +23,9 @@ export default function Allotment() {
   const [fetchSaved, setFetchSaved] = useState(0);
   const [installmentsSchedule, setInstallmentsSchedule] = useState([]);
   const [principleTimespan, setPrincipleTimespan] = useState([]);
+  const [allotmentId, setAllotmentId] = useState(null);
+  const [tabValue, setTabValue] = useState('0');
+
   let principleTimespanTemp = [];
   let installmentsScheduleTemp = [];
 
@@ -37,7 +42,7 @@ export default function Allotment() {
 
   const scheduleInstallmentsDisplay = () => {
     setInstallmentsSchedule([]);
-    installmentsScheduleTemp=[];
+    installmentsScheduleTemp = [];
 
     let principle = amountPrice * (1 - downPayment / 100),
       installmentValue =
@@ -70,13 +75,10 @@ export default function Allotment() {
     document.getElementById("result").innerHTML = "";
     principleTimespanTemp = [];
     setPrincipleTimespan([]);
-    installmentsScheduleTemp=[];
+    installmentsScheduleTemp = [];
     setInstallmentsSchedule([]);
   };
 
-  useEffect( () => {
-    console.log(principleTimespan)
-  }, [principleTimespan])
   const addResult = (
     displayDate,
     numOfDays,
@@ -315,10 +317,7 @@ export default function Allotment() {
         <h1>
             Net outstanding dues = ${seperator(
               Math.round(
-                (principleAmount +
-                  interestAmount +
-                  penalAmount) *
-                  100
+                (principleAmount + interestAmount + penalAmount) * 100
               ) / 100
             )}
         </h1>
@@ -328,7 +327,7 @@ export default function Allotment() {
   const saveAllotment = async () => {
     //send API call to save all data and payments
     if (
-      !username ||
+      !username.trim() ||
       !allotmentDate ||
       !amountPrice ||
       !downPayment ||
@@ -355,6 +354,37 @@ export default function Allotment() {
     setFetchSaved(fetchSaved + 1);
   };
 
+  const updateAllotment = async () => {
+    //send API call to update data and payments
+    if (
+      !username.trim() ||
+      !allotmentDate ||
+      !amountPrice ||
+      !downPayment ||
+      !rateInterest ||
+      !penalInterest ||
+      !installmentsNumber ||
+      !plot
+    ) {
+      toast.error("Information missing to save");
+    }
+    const res = await UpdateAllotment({
+      _id: allotmentId,
+      username,
+      allotmentDate,
+      amountPrice,
+      downPayment,
+      rateInterest,
+      penalInterest,
+      installmentsNumber,
+      plot,
+      payments: paymentsHistory,
+    });
+
+    toast.success("User updated for future use.");
+    setFetchSaved(fetchSaved + 1);
+  };
+
   return (
     <div className="allotment">
       <Header />
@@ -363,6 +393,7 @@ export default function Allotment() {
 
       <div className="buttonContainer">
         <SavedAllotments
+          setAllotmentId={setAllotmentId}
           setUsername={setUsername}
           setAllotmentDate={setAllotmentDate}
           setAmountPrice={setAmountPrice}
@@ -380,9 +411,9 @@ export default function Allotment() {
           variant="contained"
           color="success"
           sx={{ mx: "10px" }}
-          onClick={saveAllotment}
+          onClick={allotmentId ? updateAllotment : saveAllotment}
         >
-          Save user
+          {allotmentId ? "Update User" : "Save user"}
         </Button>
       </div>
       <br />
@@ -395,7 +426,7 @@ export default function Allotment() {
           fullWidth
           margin="normal"
           value={username}
-          onChange={(e) => setUsername(e.target.value.trim())} //no space in username
+          onChange={(e) => setUsername(e.target.value)} //no space in username
         />
         <TextField
           label="Date of Allotment"
@@ -523,135 +554,20 @@ export default function Allotment() {
           Calculate
         </Button>
       </div>
+      <Tabs value={tabValue} onChange={(event, newValue) => {setTabValue(newValue)}}>
+        <Tab label="Installments" value="0" />
+        <Tab label="Payments" value="1" />
+        <Tab label="Interest Calculation" value="2" />
+      </Tabs>
 
-      {/* The installments as they should be paid*/}
-      <Grid
-        direction="row"
-        container
-        justifyContent="center"
-        sx={{ marginTop: "10vh" }}
-      >
-        <Grid item className="header" lg={6}>
-          Installments Schedule
-        </Grid>
-        <Grid
-          item
-          lg={11.5}
-          sx={{
-            overflowX: "scroll",
-            marginTop: "3vh",
-            height: "60vh",
-            width: "100%",
-          }}
-        >
-          <DataGrid
-            columns={[
-              {
-                field: "installmentNumber",
-                headerName: "Installment",
-                width: 100,
-              },
-              { field: "date", headerName: "Date", width: 150 },
-              { field: "amount", headerName: "Amount", width: 250 },
-              { field: "interest", headerName: "Interest", width: 150 },
-              { field: "total", headerName: "Deposit", width: 300 },
-            ]}
-            rows={installmentsSchedule}
-            pageSize={10}
-            getRowId={() => {
-              return Math.ceil(Math.random() * 1000);
-            }}
-            rowsPerPageOptions={[10]}
-            checkboxSelection
-          />
-        </Grid>
-      </Grid>
-
-      {/* Payments Displayed for convinience */}
-      <Grid
-        direction="row"
-        container
-        justifyContent="center"
-        sx={{ marginTop: "10vh" }}
-      >
-        <Grid item className="header" lg={6}>
-          Payments History
-        </Grid>
-        <Grid
-          item
-          lg={11.5}
-          sx={{
-            overflowX: "scroll",
-            marginTop: "3vh",
-            height: "60vh",
-            width: "100%",
-          }}
-        >
-          <DataGrid
-            columns={[
-              { field: "paymentDate", headerName: "Payment Data", width: 200 },
-              {
-                field: "paymentAmount",
-                headerName: "Payment Amount",
-                width: 300,
-              },
-            ]}
-            rows={paymentsHistory}
-            getRowId={() => {
-              return Math.ceil(Math.random() * 1000);
-            }}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            checkboxSelection
-          />
-        </Grid>
-      </Grid>
-
-      {/* The interest calculation */}
-      <Grid
-        direction="row"
-        container
-        justifyContent="center"
-        sx={{ marginTop: "10vh" }}
-      >
-        <Grid item className="header" lg={6}>
-          Interest and Penalty
-        </Grid>
-        <Grid
-          item
-          lg={11.5}
-          sx={{
-            overflowX: "scroll",
-            marginTop: "3vh",
-            height: "80vh",
-            width: "100%",
-          }}
-        >
-          <DataGrid
-            columns={[
-              { field: "date", headerName: "Date", width: 150 },
-              { field: "days", headerName: "Days", width: 100 },
-              {
-                field: "principle",
-                headerName: "Principle Amount",
-                width: 200,
-              },
-              { field: "interest", headerName: "Interest", width: 200 },
-              { field: "penal", headerName: "Penality", width: 200 },
-              { field: "total", headerName: "Total", width: 300 },
-            ]}
-            rows={principleTimespan}
-            getRowId={() => {
-              return Math.ceil(Math.random() * 1000);
-            }}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            checkboxSelection
-          />
-        </Grid>
-
-        <div id="result" />
-      </Grid>
+      {tabValue === '0' ? (
+        <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
+      ) : tabValue === '1' ? (
+        <PaymentsCalculation paymentsHistory={paymentsHistory} />
+      ) : (
+        <InterestCalculation principleTimespan={principleTimespan} />
+      )}
+      <div id="result" />
     </div>
   );
 }
