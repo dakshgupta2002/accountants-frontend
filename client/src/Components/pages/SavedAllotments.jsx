@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FetchAllotment, RemoveAllotment } from "../../Api/Allotment";
+import { FetchAllotment, RemoveAllotment } from "../../api/Allotment";
 import { Button, Drawer, IconButton, Divider } from "@mui/material";
 import "../stylesheets/SavedAllotment.css";
 
@@ -16,6 +16,7 @@ export default function SavedAllotments({
   fetchSaved,
   setFetchSaved,
   resetResult,
+  setAllotmentId
 }) {
   const [allotments, setAllotments] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -34,6 +35,7 @@ export default function SavedAllotments({
   const viewDetails = (index) => {
     const allotmentLog = allotments[index];
 
+    setAllotmentId(allotmentLog._id)
     setUsername(allotmentLog.username);
     setAllotmentDate(allotmentLog.allotmentDate);
     setAmountPrice(allotmentLog.amountPrice);
@@ -43,7 +45,7 @@ export default function SavedAllotments({
     setInstallmentsNumber(allotmentLog.installmentsNumber);
     setPlot(allotmentLog.plot);
     setPaymentsHistory(allotmentLog.payments);
-
+   
     resetResult();
     setDrawerOpen(false);
   };

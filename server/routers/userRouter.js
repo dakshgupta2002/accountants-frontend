@@ -34,19 +34,13 @@ userRouter.route('/register')
 
 		//check if already an otp has been sent 
 		const oldUserVerify = await UserVerify.findOne({ email: email }).exec();
-		if (oldUserVerify !== null) {
-			res.status(409).json({
-				"msg": "OTP already sent",
-				"status": 409
-			});
-			return;
-		}
+
 		//proceed to create temporary user account 
 
 		// 1) Create a new document 
-		const userVerify = new UserVerify({
+		const userVerify = oldUserVerify===null? new UserVerify({
 			email: email
-		});
+		}) : oldUserVerify;
 
 		// 2) send otp to the email
 		const auth = await Auth(email, process.env.COMPANY_NAME);

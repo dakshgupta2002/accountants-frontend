@@ -1,5 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import AboutUs from '../elements/AboutUs';
+import Introduction from '../elements/Introduction';
+import Services from '../elements/Services';
 import Header from '../Header';
 
 export default function Home() {
@@ -13,10 +16,12 @@ export default function Home() {
 
   return (
 
-    <>
+    <div>
       <Header />
-      <h1>The Accountants</h1>
-    </>
+      <Introduction/>
+      <Services/>
+      <AboutUs/>
+    </div>
 
   )
 }
