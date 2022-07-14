@@ -24,7 +24,7 @@ export default function Allotment() {
   const [installmentsSchedule, setInstallmentsSchedule] = useState([]);
   const [principleTimespan, setPrincipleTimespan] = useState([]);
   const [allotmentId, setAllotmentId] = useState(null);
-  const [tabValue, setTabValue] = useState('0');
+  const [tabValue, setTabValue] = useState("0");
 
   let principleTimespanTemp = [];
   let installmentsScheduleTemp = [];
@@ -53,6 +53,7 @@ export default function Allotment() {
       numOfDays = 0;
 
     for (let i = 0; i < installmentsNumber; i++) {
+      beginDate = new Date(currentDate);
       currentDate.setMonth(currentDate.getMonth() + 6);
       numOfDays =
         (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
@@ -117,7 +118,7 @@ export default function Allotment() {
       beginDate = new Date(currentDate);
       if (currentInstallmentNum > 0) {
         //add time by 6 mons
-        console.log("Pay installment number", installmentsNumber);
+        // console.log("Pay installment number", installmentsNumber);
         currentDate.setMonth(currentDate.getMonth() + 6);
         currentInstallmentNum -= 1;
       } else {
@@ -260,7 +261,9 @@ export default function Allotment() {
 
           /////////////////////////////////////////////////////////////////////////////////////////////////////////////
           //adjust the payment made in the principle and interest
-          let thisPaymentAmount = paymentsHistory[currentPaymentNum][1];
+          let thisPaymentAmount =
+            paymentsHistory[currentPaymentNum].paymentAmount;
+          console.log(thisPaymentAmount);
           if (thisPaymentAmount >= interestAmount) {
             thisPaymentAmount -= interestAmount;
             interestAmount = 0;
@@ -316,9 +319,7 @@ export default function Allotment() {
     document.getElementById("result").innerHTML += `
         <h1>
             Net outstanding dues = ${seperator(
-              Math.round(
-                (principleAmount + interestAmount + penalAmount) * 100
-              ) / 100
+              round(principleAmount + interestAmount + penalAmount)
             )}
         </h1>
     `;
@@ -554,15 +555,20 @@ export default function Allotment() {
           Calculate
         </Button>
       </div>
-      <Tabs value={tabValue} onChange={(event, newValue) => {setTabValue(newValue)}}>
+      <Tabs
+        value={tabValue}
+        onChange={(event, newValue) => {
+          setTabValue(newValue);
+        }}
+      >
         <Tab label="Installments" value="0" />
         <Tab label="Payments" value="1" />
         <Tab label="Interest Calculation" value="2" />
       </Tabs>
 
-      {tabValue === '0' ? (
+      {tabValue === "0" ? (
         <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
-      ) : tabValue === '1' ? (
+      ) : tabValue === "1" ? (
         <PaymentsCalculation paymentsHistory={paymentsHistory} />
       ) : (
         <InterestCalculation principleTimespan={principleTimespan} />

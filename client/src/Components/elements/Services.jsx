@@ -8,6 +8,35 @@ import welcome from "../../assets/images/welcome.svg";
 import { Typography, Box, Stack, Paper } from "@mui/material";
 
 export default function Services() {
+  const List = ({ children }) => {
+    return (
+      <Paper
+        elevation={2}
+        sx={{
+          width: "100%",
+          height: "fit-content",
+          minHeight: "50px",
+          color: "#303854",
+          padding: '10px'
+        }}
+      >
+        {children}
+      </Paper>
+    );
+  };
+
+  const Content = ({ children }) => {
+    return (
+      <Box
+        sx={{
+          width: "90vw",
+          maxWidth: "600px"
+        }}
+      >
+        {children}
+      </Box>
+    );
+  };
   return (
     <div>
       <div className="section">
@@ -16,13 +45,13 @@ export default function Services() {
             Our Services
           </Typography>
 
-          <Box>
+          <Content>
             <Stack spacing={2}>
-              <Paper>Item 1</Paper>
-              <Paper>Item 2</Paper>
-              <Paper>Item 3</Paper>
+              <List>Item 1</List>
+              <List>Item 2</List>
+              <List>Item 3</List>
             </Stack>
-          </Box>
+          </Content>
         </div>
         <div>
           <Lottie
@@ -53,15 +82,15 @@ export default function Services() {
             Ask for help!
           </Typography>
 
-          <Box>
+          <Content>
             <Stack spacing={2}>
-              <Paper>
+              <List>
                 Evaluation of your business by professionals at their work.
-              </Paper>
-              <Paper>Item 2</Paper>
-              <Paper>Item 3</Paper>
+              </List>
+              <List>Item 2</List>
+              <List>Item 3</List>
             </Stack>
-          </Box>
+          </Content>
         </div>
       </div>
 
@@ -71,13 +100,13 @@ export default function Services() {
             Join us today!
           </Typography>
 
-          <Box>
+          <Content>
             <Stack spacing={2}>
-              <Paper>Prices lower than the most.</Paper>
-              <Paper>Transparency at every step of our work.</Paper>
-              <Paper>Item 3</Paper>
+              <List>Prices lower than the most.</List>
+              <List>Transparency at every step of our work.</List>
+              <List>Item 3</List>
             </Stack>
-          </Box>
+          </Content>
         </div>
         <div>
           <img alt="welcome" src={welcome} height={400} width={400} />
