@@ -5,7 +5,7 @@ import './config/db.js';
 
 const PORT = process.env.PORT;
 const app = express();
-app.options('*', cors());
+app.use(cors());
 app.use(express.json());
 
 import userRouter from './routers/userRouter.js';
