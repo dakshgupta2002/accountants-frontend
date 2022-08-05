@@ -15,6 +15,9 @@ import allotmentRouter from './routers/allotmentRouter.js';
 app.use('/user', userRouter);
 app.use('/allotment', allotmentRouter);
 
+app.get('/', (req, res, next) => {
+    res.end("Welcome to The Accountants server!")
+})
 app.listen(PORT, () => {
     console.log(`Hello Backend on port ${PORT}`);
 });
