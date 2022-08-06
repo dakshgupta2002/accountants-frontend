@@ -3,7 +3,7 @@ import { TextField, MenuItem, Button, Tabs, Tab } from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
-import { CreateAllotment, UpdateAllotment } from "../../api/Allotment";
+import { CreateAllotment, UpdateAllotment } from '../../Api/Allotment'
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
 import InstallmentCalculation from "../elements/InstallmentCalculation";

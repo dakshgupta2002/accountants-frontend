@@ -1,6 +1,6 @@
 import React from "react";
-import OTPInput, { ResendOTP } from "otp-input-react";
-import { UserVerify } from "../../api/User";
+import OTPInput from "otp-input-react";
+import { UserVerify } from "../../Api/User";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

@@ -1,5 +1,5 @@
 import React from "react";
-import Lottie from "react-lottie";
+// import Lottie from "react-lottie";
 import "../stylesheets/Home.css";
 import services from "../../assets/lottie/tax-vat-gst-sheet.json";
 import customerCare from "../../assets/lottie/customer-care.json";
@@ -54,7 +54,7 @@ export default function Services() {
           </Content>
         </div>
         <div>
-          <Lottie
+          {/* <Lottie
             options={{
               loop: true,
               autoplay: true,
@@ -62,12 +62,12 @@ export default function Services() {
             }}
             height={400}
             width={400}
-          />
+          /> */}
         </div>
       </div>
       <div className="section">
         <div>
-          <Lottie
+          {/* <Lottie
             options={{
               loop: true,
               autoplay: true,
@@ -75,7 +75,7 @@ export default function Services() {
             }}
             height={400}
             width={400}
-          />
+          /> */}
         </div>
         <div>
           <Typography variant="h3" component="div" gutterBottom>

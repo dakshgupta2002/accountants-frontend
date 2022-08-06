@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FetchAllotment, RemoveAllotment } from "../../api/Allotment";
+import { FetchAllotment, RemoveAllotment } from "../../Api/Allotment";
 import { Button, Drawer, IconButton, Divider } from "@mui/material";
 import "../stylesheets/SavedAllotment.css";
 

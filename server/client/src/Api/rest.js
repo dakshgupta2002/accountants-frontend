@@ -1,8 +1,5 @@
-const base = "http://localhost:8000";
-
-
 export const post = async (method, url, data = null) => {
-    const URL = `${base}/${url}`;
+    const URL = `/${url}`;
     const response = await fetch(URL, {
         method: method,
         headers: {
@@ -17,7 +14,7 @@ export const post = async (method, url, data = null) => {
 }
 
 export const get = async (url) => {
-    const URL = `${base}/${url}`;
+    const URL = `/${url}`;
     const response = await fetch(URL, {
         method: 'GET',
         headers: {
