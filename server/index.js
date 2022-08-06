@@ -6,7 +6,7 @@ import { corsOptions } from './config/cors';
 
 const PORT = process.env.PORT;
 const app = express();
-app.use(cors( { corsOptions}));
+app.use(cors({ corsOptions }));
 app.use(express.json());
 
 import userRouter from './routers/userRouter.js';
@@ -20,15 +20,14 @@ app.get('/', (req, res, next) => {
     res.end("Welcome to The Accountants server!")
 })
 
-//HEROKU
-if (process.env.NODE_ENV == 'production') {
-    app.use(express.static('client/build'));
-    const path = require('path');
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, './client/build')))
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-    })
-}
+// AFTER defining routes: Anything that doesn't match what's above, send back index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/client/build/index.html'))
+})
+
 app.listen(PORT || 5000, () => {
     console.log(`Hello Backend on port ${PORT}`);
 });
