@@ -1,5 +1,7 @@
+const BASE_URL = "https://theaccountants.herokuapp.com/"
+
 export const post = async (method, url, data = null) => {
-    const URL = `/${url}`;
+    const URL = `${BASE_URL}/${url}`;
     const response = await fetch(URL, {
         method: method,
         headers: {
@@ -14,7 +16,7 @@ export const post = async (method, url, data = null) => {
 }
 
 export const get = async (url) => {
-    const URL = `/${url}`;
+    const URL = `${BASE_URL}/${url}`;
     const response = await fetch(URL, {
         method: 'GET',
         headers: {
