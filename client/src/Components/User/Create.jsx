@@ -13,7 +13,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { UserCreate } from '../../api/User';
+import { UserCreate } from '../../Api/User';
 
 function Copyright(props) {
     return (
