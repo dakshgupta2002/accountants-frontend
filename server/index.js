@@ -19,6 +19,8 @@ app.use('/allotment', allotmentRouter);
 app.get('/', (req, res, next) => {
     res.end("Welcome to The Accountants server!")
 })
+
+
 app.listen(PORT || 5000, () => {
     console.log(`Hello Backend on port ${PORT}`);
 });
