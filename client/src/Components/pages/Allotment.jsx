@@ -3,12 +3,15 @@ import { TextField, MenuItem, Button, Tabs, Tab } from "@mui/material";
 import Header from "../Header";
 import "../stylesheets/Allotment.css";
 import { seperator, round } from "../../utils/numberFormat";
-import { CreateAllotment, UpdateAllotment } from '../../Api/Allotment'
+import { CreateAllotment, UpdateAllotment } from "../../Api/Allotment";
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
 import InstallmentCalculation from "../elements/InstallmentCalculation";
 import InterestCalculation from "../elements/InterestCalculation";
 import PaymentsCalculation from "../elements/PaymentsCalculation";
+import AddAllottee from "./AddAllottee";
+import ReactToPdf from "react-to-pdf";
+import AddPayment from "./AddPayment";
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
@@ -24,21 +27,13 @@ export default function Allotment() {
   const [installmentsSchedule, setInstallmentsSchedule] = useState([]);
   const [principleTimespan, setPrincipleTimespan] = useState([]);
   const [allotmentId, setAllotmentId] = useState(null);
-  const [tabValue, setTabValue] = useState("0");
+  const [isAllotteeOpen, setIsAllotteeOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+
+  const ref = React.createRef();
 
   let principleTimespanTemp = [];
   let installmentsScheduleTemp = [];
-
-  const addPayment = () => {
-    setPaymentsHistory([
-      ...paymentsHistory,
-      {
-        id: paymentsHistory.length,
-        paymentDate: "",
-        paymentAmount: "",
-      },
-    ]);
-  };
 
   const scheduleInstallmentsDisplay = () => {
     setInstallmentsSchedule([]);
@@ -389,10 +384,65 @@ export default function Allotment() {
   return (
     <div className="allotment">
       <Header />
-
       <h1>Land Allotment Calculator</h1>
 
+      <ReactToPdf targetRef={ref} filename="div-blue.pdf">
+        {({ toPdf }) => <button onClick={toPdf}>Generate pdf</button>}
+      </ReactToPdf>
+
+      <div className="inputModals">
+        <AddAllottee
+          isOpen={isAllotteeOpen}
+          close={() => setIsAllotteeOpen(false)}
+          username={username}
+          setUsername={setUsername}
+          setAllotmentDate={setAllotmentDate}
+          allotmentDate={allotmentDate}
+          amountPrice={amountPrice}
+          setAmountPrice={setAmountPrice}
+          downPayment={downPayment}
+          setDownPayment={setDownPayment}
+          installmentsNumber={installmentsNumber}
+          setInstallmentsNumber={setInstallmentsNumber}
+          rateInterest={rateInterest}
+          setRateInterest={setRateInterest}
+          penalInterest={penalInterest}
+          setPenalInterest={setPenalInterest}
+          plot={plot}
+          setPlot={setPlot}
+        />
+
+        <AddPayment
+          isOpen={isPaymentOpen}
+          close={() => {
+            setIsPaymentOpen(false);
+          }}
+          paymentsHistory={paymentsHistory}
+          setPaymentsHistory={setPaymentsHistory}
+        />
+      </div>
+
       <div className="buttonContainer">
+        <Button variant="contained" color="secondary" onClick={calculate}>
+          Calculate
+        </Button>
+
+        <Button
+          variant="contained"
+          margin="normal"
+          onClick={() => setIsAllotteeOpen(true)}
+        >
+          + Allottee
+        </Button>
+
+        <Button
+          variant="contained"
+          margin="normal"
+          onClick={() => setIsPaymentOpen(true)}
+        >
+          + Payment
+        </Button>
+
         <SavedAllotments
           setAllotmentId={setAllotmentId}
           setUsername={setUsername}
@@ -417,163 +467,26 @@ export default function Allotment() {
           {allotmentId ? "Update User" : "Save user"}
         </Button>
       </div>
+
       <br />
-      <div className="formData">
-        <TextField
-          label="Username"
-          required={true}
-          variant="outlined"
-          type="text"
-          fullWidth
-          margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} //no space in username
-        />
-        <TextField
-          label="Date of Allotment"
-          variant="outlined"
-          type="Date"
-          fullWidth
-          margin="normal"
-          onChange={(e) => setAllotmentDate(e.target.value)}
-          value={allotmentDate}
-        />
-        <TextField
-          label="Amount Price"
-          required={true}
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={amountPrice}
-          onChange={(e) => setAmountPrice(e.target.value)}
-        />
-        <TextField
-          label="Down Payment (%)"
-          required={true}
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={downPayment}
-          onChange={(e) => setDownPayment(e.target.value)}
-        />
-        <TextField
-          label="Number of Installments"
-          required={true}
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={installmentsNumber}
-          onChange={(e) => setInstallmentsNumber(e.target.value)}
-        />
-        <TextField
-          label="Interest Rate"
-          required={true}
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={rateInterest}
-          onChange={(e) => setRateInterest(e.target.value)}
-        />
-        <TextField
-          label="Penality Rate"
-          required={true}
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          value={penalInterest}
-          onChange={(e) => setPenalInterest(e.target.value)}
-        />
 
-        <TextField
-          value={plot}
-          onChange={(e) => setPlot(e.target.value)}
-          select
-          fullWidth
-          margin="normal"
-          label="Type of plot"
-        >
-          <MenuItem key={1} value="Shop">
-            {" "}
-            Shop{" "}
-          </MenuItem>
-          <MenuItem key={2} value="Booth">
-            {" "}
-            Booth{" "}
-          </MenuItem>
-        </TextField>
-      </div>
-      <div className="buttonContainer">
-        <Button variant="contained" color="secondary" onClick={addPayment}>
-          Add Payment
-        </Button>
-      </div>
-      <div className="payments">
-        {paymentsHistory.length === 0 ? (
-          <h4>No payments were made by {username}</h4>
-        ) : null}
-        {paymentsHistory.map((paymentLog, index) => {
-          return (
-            <div className="paymentLog" key={index}>
-              <span>Payment {index + 1}</span>
-              <TextField
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                label="Payment Date"
-                margin="normal"
-                value={paymentLog?.paymentDate}
-                onChange={(e) => {
-                  let updatedPaymentHistory = [...paymentsHistory];
-                  updatedPaymentHistory[index].paymentDate = e.target.value;
-                  setPaymentsHistory(updatedPaymentHistory);
-                }}
-              />
-
-              <TextField
-                type="number"
-                InputLabelProps={{ shrink: true }}
-                label="Payment Amount"
-                margin="normal"
-                value={paymentLog.paymentAmount}
-                onChange={(e) => {
-                  let updatedPaymentHistory = [...paymentsHistory];
-                  updatedPaymentHistory[index].paymentAmount = e.target.value;
-                  setPaymentsHistory(updatedPaymentHistory);
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <br />
-      <div className="buttonContainer">
-        <Button variant="contained" color="secondary" onClick={calculate}>
-          Calculate
-        </Button>
-      </div>
-      <Tabs
-        value={tabValue}
-        onChange={(event, newValue) => {
-          setTabValue(newValue);
-        }}
-      >
-        <Tab label="Installments" value="0" />
-        <Tab label="Payments" value="1" />
-        <Tab label="Interest Calculation" value="2" />
-      </Tabs>
-
-      {tabValue === "0" ? (
-        <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
-      ) : tabValue === "1" ? (
+      <div className="result" ref={ref}>
+        <div className="data">
+          <div className="dataDiv">Allottee: {username}</div>
+          <div className="dataDiv">Date of Allotment: {allotmentDate}</div>
+          <div className="dataDiv">Amount Price: {amountPrice}</div>
+          <div className="dataDiv">Down Payment: {downPayment}</div>
+          <div className="dataDiv">
+            Number of Installments: {installmentsNumber}
+          </div>
+          <div className="dataDiv">Interest Rate: {rateInterest}</div>
+          <div className="dataDiv">Penality Rate: {penalInterest}</div>
+          <div className="dataDiv">Type of Land: {plot ? "plot" : "booth"}</div>
+        </div>
         <PaymentsCalculation paymentsHistory={paymentsHistory} />
-      ) : (
+        <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
         <InterestCalculation principleTimespan={principleTimespan} />
-      )}
-      <div id="result" />
+      </div>
     </div>
   );
 }
