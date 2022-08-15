@@ -8,7 +8,6 @@ export default function InstallmentCalculation({installmentsSchedule}) {
       direction="row"
       container
       justifyContent="center"
-      sx={{ marginTop: "10vh" }}
     >
       <Grid item className="header" lg={6}>
         Installments Schedule
