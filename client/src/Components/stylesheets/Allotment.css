@@ -62,11 +62,14 @@ tr, th, td{
     flex-direction: row;
     flex-wrap: wrap;
     width: 90vw;
-    max-width: 1000px;
 }
 
 .dataDiv{
     margin: 0px 20px;
     font-size: large;
     
+}
+
+.result{
+    width: 100%;
 }

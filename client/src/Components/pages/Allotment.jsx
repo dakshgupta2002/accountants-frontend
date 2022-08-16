@@ -10,8 +10,9 @@ import InstallmentCalculation from "../elements/InstallmentCalculation";
 import InterestCalculation from "../elements/InterestCalculation";
 import PaymentsCalculation from "../elements/PaymentsCalculation";
 import AddAllottee from "./AddAllottee";
-import ReactToPdf from "react-to-pdf";
 import AddPayment from "./AddPayment";
+import ReactToPdf from "react-to-pdf";
+import { DownloadTableExcel } from "react-export-table-to-excel";
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
@@ -390,6 +391,14 @@ export default function Allotment() {
         {({ toPdf }) => <button onClick={toPdf}>Generate pdf</button>}
       </ReactToPdf>
 
+      <DownloadTableExcel
+        filename="users table"
+        sheet="users"
+        currentTableRef={ref.current}
+      >
+        <button> Export excel </button>
+      </DownloadTableExcel>
+
       <div className="inputModals">
         <AddAllottee
           isOpen={isAllotteeOpen}
@@ -487,6 +496,8 @@ export default function Allotment() {
         <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
         <InterestCalculation principleTimespan={principleTimespan} />
       </div>
+
+      <div id="result"></div>
     </div>
   );
 }
