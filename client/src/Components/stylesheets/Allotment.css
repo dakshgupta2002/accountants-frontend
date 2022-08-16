@@ -59,8 +59,7 @@ tr, th, td{
 
 .data{
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 90vw;
 }
 

@@ -6,7 +6,7 @@ import { seperator, round } from "../../utils/numberFormat";
 import { CreateAllotment, UpdateAllotment } from "../../Api/Allotment";
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
-import InstallmentCalculation from "../elements/InstallmentCalculation";
+import Data from '../elements/Data'
 import InterestCalculation from "../elements/InterestCalculation";
 import PaymentsCalculation from "../elements/PaymentsCalculation";
 import AddAllottee from "./AddAllottee";
@@ -492,9 +492,9 @@ export default function Allotment() {
           <div className="dataDiv">Penality Rate: {penalInterest}</div>
           <div className="dataDiv">Type of Land: {plot ? "plot" : "booth"}</div>
         </div>
-        <PaymentsCalculation paymentsHistory={paymentsHistory} />
-        <InstallmentCalculation installmentsSchedule={installmentsSchedule} />
-        <InterestCalculation principleTimespan={principleTimespan} />
+        {/* <PaymentsCalculation paymentsHistory={paymentsHistory} /> */}
+        <Data installmentsSchedule={installmentsSchedule} paymentsHistory={paymentsHistory} principleTimespan={principleTimespan}/>
+        {/* <InterestCalculation principleTimespan={principleTimespan} /> */}
       </div>
 
       <div id="result"></div>

@@ -26,7 +26,7 @@ export default function AddAllottee({
     <ModalContainer isOpen={isOpen} close={close}>
       <div className="formData">
         <TextField
-          label="Username"
+          label="Allotee name"
           required={true}
           variant="outlined"
           type="text"
