@@ -70,5 +70,6 @@ tr, th, td{
 }
 
 .result{
-    width: 100%;
+    width: 90%;
+    max-width: 3500px;
 }

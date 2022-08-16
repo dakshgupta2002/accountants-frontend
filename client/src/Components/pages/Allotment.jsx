@@ -6,13 +6,10 @@ import { seperator, round } from "../../utils/numberFormat";
 import { CreateAllotment, UpdateAllotment } from "../../Api/Allotment";
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
-import Data from '../elements/Data'
-import InterestCalculation from "../elements/InterestCalculation";
-import PaymentsCalculation from "../elements/PaymentsCalculation";
+import Data from "../elements/Data";
 import AddAllottee from "./AddAllottee";
 import AddPayment from "./AddPayment";
-import ReactToPdf from "react-to-pdf";
-import { DownloadTableExcel } from "react-export-table-to-excel";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 export default function Allotment() {
   const [username, setUsername] = useState("");
@@ -387,17 +384,14 @@ export default function Allotment() {
       <Header />
       <h1>Land Allotment Calculator</h1>
 
-      <ReactToPdf targetRef={ref} filename="div-blue.pdf">
-        {({ toPdf }) => <button onClick={toPdf}>Generate pdf</button>}
-      </ReactToPdf>
-
-      <DownloadTableExcel
-        filename="users table"
-        sheet="users"
-        currentTableRef={ref.current}
-      >
-        <button> Export excel </button>
-      </DownloadTableExcel>
+      <ReactHTMLTableToExcel
+        id="test-table-xls-button"
+        className="download-table-xls-button"
+        table="data"
+        filename={username}
+        sheet="interest"
+        buttonText="Export XLS"
+      />
 
       <div className="inputModals">
         <AddAllottee
@@ -492,9 +486,12 @@ export default function Allotment() {
           <div className="dataDiv">Penality Rate: {penalInterest}</div>
           <div className="dataDiv">Type of Land: {plot ? "plot" : "booth"}</div>
         </div>
-        {/* <PaymentsCalculation paymentsHistory={paymentsHistory} /> */}
-        <Data installmentsSchedule={installmentsSchedule} paymentsHistory={paymentsHistory} principleTimespan={principleTimespan}/>
-        {/* <InterestCalculation principleTimespan={principleTimespan} /> */}
+        <Data
+          id={"data"}
+          installmentsSchedule={installmentsSchedule}
+          paymentsHistory={paymentsHistory}
+          principleTimespan={principleTimespan}
+        />
       </div>
 
       <div id="result"></div>

@@ -10,13 +10,13 @@ import Paper from '@mui/material/Paper';
 export default function Data({
     installmentsSchedule,
     paymentsHistory,
-    principleTimespan
+    principleTimespan,
+    id
 }) {
-  // console.log(installmentsSchedule, paymentsHistory, principleTimespan)
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+    <TableContainer component={Paper} >
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table" id={id}>
         <TableHead>
           Installments Schedule
           <TableRow>
