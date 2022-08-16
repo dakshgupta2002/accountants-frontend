@@ -8,7 +8,6 @@ export default function InterestCalculation({ principleTimespan }) {
       direction="row"
       container
       justifyContent="center"
-      sx={{ marginTop: "10vh" }}
     >
       <Grid item className="header" lg={6}>
         Interest and Penalty

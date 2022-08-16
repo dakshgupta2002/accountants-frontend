@@ -8,7 +8,6 @@ export default function PaymentsCalculation({ paymentsHistory }) {
       direction="row"
       container
       justifyContent="center"
-      sx={{ marginTop: "10vh" }}
     >
       <Grid item className="header" lg={6}>
         Payments History

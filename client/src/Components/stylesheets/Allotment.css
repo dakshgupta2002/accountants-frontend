@@ -56,3 +56,20 @@ tr, th, td{
     font-weight: 600;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.data{
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+}
+
+.dataDiv{
+    margin: 0px 20px;
+    font-size: large;
+    
+}
+
+.result{
+    width: 90%;
+    max-width: 3500px;
+}
