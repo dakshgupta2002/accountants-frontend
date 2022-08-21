@@ -12,6 +12,7 @@ export default function AddPayment({
   const [paymentAmount, setPaymentAmount] = useState(0);
 
   const addPayment = () => {
+    console.log(paymentDate.toLocaleDateString)
     setPaymentsHistory([
       ...paymentsHistory,
       {
