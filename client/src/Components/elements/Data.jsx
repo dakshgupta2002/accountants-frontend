@@ -20,7 +20,7 @@ export default function Data({
     justifyContent: 'space-around'
   };
   return (
-    <TableContainer component={Paper}>
+    <Table id={id}>
       <div style={installmentsAndPayment}>
         <Table size="small" aria-label="a dense table" sx={{ maxWidth: 650 }}>
           <TableHead>
@@ -37,7 +37,6 @@ export default function Data({
             {installmentsSchedule.map((installment) => (
               <TableRow
                 key={installment.installmentsNumber}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
                   {installment.installmentsNumber}
@@ -64,7 +63,6 @@ export default function Data({
             {paymentsHistory.map((payment, index) => (
               <TableRow
                 key={index + 1}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
                   {index + 1}
@@ -82,7 +80,6 @@ export default function Data({
         sx={{ minWidth: 650 }}
         size="small"
         aria-label="a dense table"
-        id={id}
       >
         <TableHead>
           Interest Calculation
@@ -91,15 +88,16 @@ export default function Data({
             <TableCell align="right">Days</TableCell>
             <TableCell align="right">Principle</TableCell>
             <TableCell align="right">Interest</TableCell>
+            <TableCell align="right">Cum. Int.</TableCell>
             <TableCell align="right">Penality</TableCell>
-            <TableCell align="right">Total</TableCell>
+            <TableCell align="right">Cum. Pen.</TableCell>
+            <TableCell align="right">Running Bal.</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {principleTimespan.map((principle, index) => (
             <TableRow
               key={index + 1}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 {principle.date}
@@ -113,6 +111,6 @@ export default function Data({
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+    </Table>
   );
 }

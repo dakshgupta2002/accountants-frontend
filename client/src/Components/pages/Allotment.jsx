@@ -407,7 +407,7 @@ export default function Allotment() {
           setPaymentsHistory={setPaymentsHistory}
         />
 
-        <EditPayment  
+        <EditPayment
           isOpen={isEditPaymentOpen}
           close={() => setIsEditPaymentOpen(false)}
           payments={paymentsHistory}
@@ -416,57 +416,64 @@ export default function Allotment() {
       </div>
 
       <div className="buttonContainer">
-        <Button variant="contained" color="secondary" onClick={calculate}>
-          Calculate
-        </Button>
+        <div style={{ display: "flex" }}>
+          <Button
+            sx={{ mx: "10px" }}
+            variant="contained"
+            margin="normal"
+            onClick={() => setIsAllotteeOpen(true)}
+          >
+            + Allottee
+          </Button>
 
-        <Button
-          variant="contained"
-          margin="normal"
-          onClick={() => setIsAllotteeOpen(true)}
-        >
-          + Allottee
-        </Button>
+          <Button
+            sx={{ mx: "10px" }}
+            variant="contained"
+            margin="normal"
+            onClick={() => setIsPaymentOpen(true)}
+          >
+            + Payment
+          </Button>
 
-        <Button
-          variant="contained"
-          margin="normal"
-          onClick={() => setIsPaymentOpen(true)}
-        >
-          + Payment
-        </Button>
+          <Button
+            sx={{ mx: "10px" }}
+            variant="contained"
+            margin="normal"
+            onClick={() => setIsEditPaymentOpen(true)}
+          >
+            Edit Payments
+          </Button>
+        </div>
 
-        <Button
-          variant="contained"
-          margin="normal"
-          onClick={() => setIsEditPaymentOpen(true)}
-        >
-          Edit Payments
-        </Button>
+        <div style={{ display: "flex" }}>
+          <SavedAllotments
+            setAllotmentId={setAllotmentId}
+            setUsername={setUsername}
+            setAllotmentDate={setAllotmentDate}
+            setAmountPrice={setAmountPrice}
+            setDownPayment={setDownPayment}
+            setRateInterest={setRateInterest}
+            setPenalInterest={setPenalInterest}
+            setInstallmentsNumber={setInstallmentsNumber}
+            setPlot={setPlot}
+            setPaymentsHistory={setPaymentsHistory}
+            fetchSaved={fetchSaved}
+            setFetchSaved={setFetchSaved}
+            resetResult={resetResult}
+          />
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ mx: "10px" }}
+            onClick={allotmentId ? updateAllotment : saveAllotment}
+          >
+            {allotmentId ? "Update User" : "Save user"}
+          </Button>
 
-        <SavedAllotments
-          setAllotmentId={setAllotmentId}
-          setUsername={setUsername}
-          setAllotmentDate={setAllotmentDate}
-          setAmountPrice={setAmountPrice}
-          setDownPayment={setDownPayment}
-          setRateInterest={setRateInterest}
-          setPenalInterest={setPenalInterest}
-          setInstallmentsNumber={setInstallmentsNumber}
-          setPlot={setPlot}
-          setPaymentsHistory={setPaymentsHistory}
-          fetchSaved={fetchSaved}
-          setFetchSaved={setFetchSaved}
-          resetResult={resetResult}
-        />
-        <Button
-          variant="contained"
-          color="success"
-          sx={{ mx: "10px" }}
-          onClick={allotmentId ? updateAllotment : saveAllotment}
-        >
-          {allotmentId ? "Update User" : "Save user"}
-        </Button>
+          <Button variant="contained" color="secondary" onClick={calculate}>
+            Calculate
+          </Button>
+        </div>
       </div>
 
       <br />
