@@ -85,6 +85,7 @@ export default function Data({
           Interest Calculation
           <TableRow>
             <TableCell>Date</TableCell>
+            <TableCell align="right">Payment</TableCell>
             <TableCell align="right">Days</TableCell>
             <TableCell align="right">Principle</TableCell>
             <TableCell align="right">Interest</TableCell>
@@ -102,10 +103,14 @@ export default function Data({
               <TableCell component="th" scope="row">
                 {principle.date}
               </TableCell>
+
+              <TableCell align="right">{principle.payment}</TableCell>
               <TableCell align="right">{principle.days}</TableCell>
               <TableCell align="right">{principle.principle}</TableCell>
               <TableCell align="right">{principle.interest}</TableCell>
+              <TableCell align="right">{principle.cumInterest}</TableCell>
               <TableCell align="right">{principle.penal}</TableCell>
+              <TableCell align="right">{principle.cumPenal}</TableCell>
               <TableCell align="right">{principle.total}</TableCell>
             </TableRow>
           ))}

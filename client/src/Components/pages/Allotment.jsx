@@ -76,21 +76,26 @@ export default function Allotment() {
   };
 
   const addResult = (
+    payment,
     displayDate,
     numOfDays,
     principleAmount,
     interestAmount,
+    cumulativeInterest,
     penalAmount,
-    className
+    cumulativePenality
   ) => {
     principleTimespanTemp.push({
       id: Math.ceil(Math.random() * 1000),
-      date: displayDate.toLocaleDateString("en-GB"),
+      payment: seperator(round(payment)),
+      date: new Date(displayDate).toLocaleDateString("en-GB"),
       days: Math.round(numOfDays),
       principle: seperator(round(principleAmount)),
+      cumInterest: seperator(round(cumulativeInterest)),
       interest: seperator(round(interestAmount)),
       penal: seperator(round(penalAmount)),
-      total: seperator(round(principleAmount + interestAmount + penalAmount)),
+      cumPenal: seperator(round(cumulativePenality)),
+      total: seperator(round(principleAmount + cumulativeInterest)),
     });
   };
 
@@ -99,7 +104,10 @@ export default function Allotment() {
     scheduleInstallmentsDisplay();
     //calculate the installments and payments net
     let principleAmount = amountPrice * (1 - downPayment / 100);
+    let runningAmount = principleAmount;
     let penalAmount, interestAmount;
+    let cumInterest = 0,
+      cumPenal = 0;
 
     let beginDate, //date from which interest begins
       currentDate = new Date(allotmentDate), //date upto which due is calculated
@@ -137,22 +145,25 @@ export default function Allotment() {
         const numOfDays =
           (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
         interestAmount =
-          (principleAmount * (rateInterest / 100) * numOfDays) / 365;
-        penalAmount =
-          (principleAmount * (penalInterest / 100) * numOfDays) / 365;
+          (runningAmount * (rateInterest / 100) * numOfDays) / 365;
+        penalAmount = (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+
+        cumInterest += interestAmount;
+        cumPenal += penalAmount;
 
         //append these values to result
         addResult(
+          0,
           currentDate,
           numOfDays,
           principleAmount,
           interestAmount,
+          cumInterest,
           penalAmount,
-          ""
+          cumPenal
         );
-        principleAmount += interestAmount + penalAmount;
+        runningAmount += interestAmount;
       } else {
-        console.log(paymentsHistory[paymentsHistory.length - 1]);
         //balance out all payments made during begin and current date
         while (currentPaymentNum < paymentsHistory.length) {
           const paymentDate = new Date(
@@ -165,58 +176,70 @@ export default function Allotment() {
               (paymentDate.getTime() - beginDate.getTime()) /
               (1000 * 60 * 60 * 24);
 
-            if (currentInstallmentNum >= 0) penalAmount = 0;
-            else
-              penalAmount =
-                (principleAmount * (penalInterest / 100) * numOfDays) / 365;
+            penalAmount =
+              (runningAmount * (penalInterest / 100) * numOfDays) / 365;
 
             interestAmount =
-              (principleAmount * (rateInterest / 100) * numOfDays) / 365;
+              (runningAmount * (rateInterest / 100) * numOfDays) / 365;
+            
+            cumInterest += interestAmount;
+            cumPenal += penalAmount;
 
             addResult(
+              0,
               paymentDate,
               numOfDays,
               principleAmount,
               interestAmount,
+              cumInterest,
               penalAmount,
-              ""
+              cumPenal
             );
+
 
             //adjust the payment made in the principle and interest
             let thisPaymentAmount =
               paymentsHistory[currentPaymentNum].paymentAmount;
 
-            if (thisPaymentAmount >= penalAmount) {
-              thisPaymentAmount -= penalAmount;
-              penalAmount = 0;
+            if (thisPaymentAmount >= cumPenal) {
+              thisPaymentAmount -= cumPenal;
+              cumPenal = 0;
             } else {
-              penalAmount -= thisPaymentAmount;
+              cumPenal -= thisPaymentAmount;
               thisPaymentAmount = 0;
             }
 
-            if (thisPaymentAmount >= interestAmount) {
-              thisPaymentAmount -= interestAmount;
-              interestAmount = 0;
+            if (thisPaymentAmount >= cumInterest) {
+              thisPaymentAmount -= cumInterest;
+              cumInterest = 0;
             } else {
-              interestAmount -= thisPaymentAmount;
+              cumInterest -= thisPaymentAmount;
+              thisPaymentAmount = 0;
+            }
+            if (thisPaymentAmount >= principleAmount) {
+              thisPaymentAmount -= principleAmount;
+              principleAmount = 0;
+            } else {
+              principleAmount -= thisPaymentAmount;
               thisPaymentAmount = 0;
             }
 
-            principleAmount += penalAmount + interestAmount - thisPaymentAmount;
+            runningAmount = principleAmount + cumInterest;
+
             addResult(
+              paymentsHistory[currentPaymentNum].paymentAmount,
               paymentDate,
               numOfDays,
               principleAmount,
               interestAmount,
+              cumInterest,
               penalAmount,
-              "paymentClass"
+              cumPenal
             );
 
             currentPaymentNum += 1;
             beginDate = new Date(paymentDate);
-            // console.log({beginDate})
           } else {
-            console.log("Breaking out of loop, payments finish");
             break;
           }
         }
@@ -238,27 +261,47 @@ export default function Allotment() {
               (currentDate.getTime() - beginDate.getTime()) /
               (1000 * 60 * 60 * 24);
             interestAmount =
-              (principleAmount * (rateInterest / 100) * numOfDays) / 365;
+              (runningAmount * (rateInterest / 100) * numOfDays) / 365;
+            cumInterest+=interestAmount;
+
             addResult(
+              0,
               currentDate,
               numOfDays,
               principleAmount,
               interestAmount,
+              cumInterest,
               penalAmount,
-              ""
+              cumPenal
             );
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //adjust the payment made in the principle and interest
             let thisPaymentAmount =
               paymentsHistory[currentPaymentNum].paymentAmount;
-            console.log(thisPaymentAmount);
-            if (thisPaymentAmount >= interestAmount) {
-              thisPaymentAmount -= interestAmount;
-              interestAmount = 0;
-            } else {
-              interestAmount -= thisPaymentAmount;
-            }
+              
+              if (thisPaymentAmount >= cumPenal) {
+                thisPaymentAmount -= cumPenal;
+                cumPenal = 0;
+              } else {
+                cumPenal -= thisPaymentAmount;
+                thisPaymentAmount = 0;
+              }
+  
+              if (thisPaymentAmount >= cumInterest) {
+                thisPaymentAmount -= cumInterest;
+                cumInterest = 0;
+              } else {
+                cumInterest -= thisPaymentAmount;
+                thisPaymentAmount = 0;
+              }
+              if (thisPaymentAmount >= principleAmount) {
+                thisPaymentAmount -= principleAmount;
+                principleAmount = 0;
+              } else {
+                principleAmount -= thisPaymentAmount;
+                thisPaymentAmount = 0;
+              }
             principleAmount += interestAmount - thisPaymentAmount;
             currentPaymentNum += 1;
           }
@@ -269,21 +312,25 @@ export default function Allotment() {
           (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
         //payment was not made on this date, add interest and move on
         interestAmount =
-          (principleAmount * (rateInterest / 100) * numOfDays) / 365;
+          (runningAmount * (rateInterest / 100) * numOfDays) / 365;
         penalAmount =
-          (principleAmount * (penalInterest / 100) * numOfDays) / 365;
+          (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+        cumInterest+=interestAmount;
+        cumPenal+=penalAmount;
 
         //append these values to result
         addResult(
+          0,
           currentDate,
           numOfDays,
           principleAmount,
           interestAmount,
+          cumInterest,
           penalAmount,
-          ""
+          cumPenal
         );
 
-        principleAmount += interestAmount + penalAmount;
+        runningAmount = principleAmount + interestAmount;
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if (currentInstallmentNum === 0) {
@@ -295,7 +342,7 @@ export default function Allotment() {
     document.getElementById("result").innerHTML += `
         <h1>
             Net outstanding dues = ${seperator(
-              round(principleAmount + interestAmount + penalAmount)
+              round(principleAmount + cumInterest + cumPenal)
             )}
         </h1>
     `;
