@@ -181,7 +181,7 @@ export default function Allotment() {
 
             interestAmount =
               (runningAmount * (rateInterest / 100) * numOfDays) / 365;
-            
+
             cumInterest += interestAmount;
             cumPenal += penalAmount;
 
@@ -195,7 +195,6 @@ export default function Allotment() {
               penalAmount,
               cumPenal
             );
-
 
             //adjust the payment made in the principle and interest
             let thisPaymentAmount =
@@ -244,6 +243,8 @@ export default function Allotment() {
           }
         }
 
+        let warningPayment = false;
+
         if (paymentsHistory.length > currentPaymentNum) {
           const paymentDate = new Date(
             paymentsHistory[currentPaymentNum].paymentDate
@@ -255,14 +256,18 @@ export default function Allotment() {
               (1000 * 60 * 60 * 24) <=
               10
           ) {
+            console.log("payment within warning period");
+            warningPayment = true;
             //if made within 10 days, then no penalty and interest of 6 mos
-            penalAmount = 0;
             const numOfDays =
               (currentDate.getTime() - beginDate.getTime()) /
               (1000 * 60 * 60 * 24);
+            penalAmount =
+              (runningAmount * (penalInterest / 100) * numOfDays) / 365;
             interestAmount =
               (runningAmount * (rateInterest / 100) * numOfDays) / 365;
-            cumInterest+=interestAmount;
+            cumInterest += interestAmount;
+            cumPenal += penalAmount;
 
             addResult(
               0,
@@ -279,58 +284,73 @@ export default function Allotment() {
             //adjust the payment made in the principle and interest
             let thisPaymentAmount =
               paymentsHistory[currentPaymentNum].paymentAmount;
-              
-              if (thisPaymentAmount >= cumPenal) {
-                thisPaymentAmount -= cumPenal;
-                cumPenal = 0;
-              } else {
-                cumPenal -= thisPaymentAmount;
-                thisPaymentAmount = 0;
-              }
-  
-              if (thisPaymentAmount >= cumInterest) {
-                thisPaymentAmount -= cumInterest;
-                cumInterest = 0;
-              } else {
-                cumInterest -= thisPaymentAmount;
-                thisPaymentAmount = 0;
-              }
-              if (thisPaymentAmount >= principleAmount) {
-                thisPaymentAmount -= principleAmount;
-                principleAmount = 0;
-              } else {
-                principleAmount -= thisPaymentAmount;
-                thisPaymentAmount = 0;
-              }
-            principleAmount += interestAmount - thisPaymentAmount;
+
+            if (thisPaymentAmount >= cumPenal) {
+              thisPaymentAmount -= cumPenal;
+              cumPenal = 0;
+            } else {
+              cumPenal -= thisPaymentAmount;
+              thisPaymentAmount = 0;
+            }
+
+            if (thisPaymentAmount >= cumInterest) {
+              thisPaymentAmount -= cumInterest;
+              cumInterest = 0;
+            } else {
+              cumInterest -= thisPaymentAmount;
+              thisPaymentAmount = 0;
+            }
+            if (thisPaymentAmount >= principleAmount) {
+              thisPaymentAmount -= principleAmount;
+              principleAmount = 0;
+            } else {
+              principleAmount -= thisPaymentAmount;
+              thisPaymentAmount = 0;
+            }
+
+            runningAmount = principleAmount + interestAmount;
+
+            addResult(
+              paymentsHistory[currentPaymentNum].paymentAmount,
+              paymentDate,
+              numOfDays,
+              principleAmount,
+              interestAmount,
+              cumInterest,
+              penalAmount,
+              cumPenal
+            );
             currentPaymentNum += 1;
           }
         }
 
-        // calculate interest from last payment/begin and add to principle
-        const numOfDays =
-          (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
-        //payment was not made on this date, add interest and move on
-        interestAmount =
-          (runningAmount * (rateInterest / 100) * numOfDays) / 365;
-        penalAmount =
-          (runningAmount * (penalInterest / 100) * numOfDays) / 365;
-        cumInterest+=interestAmount;
-        cumPenal+=penalAmount;
+        if (warningPayment === false) {
+          // calculate interest from last payment/begin and add to principle
+          const numOfDays =
+            (currentDate.getTime() - beginDate.getTime()) /
+            (1000 * 60 * 60 * 24);
+          //payment was not made on this date, add interest and move on
+          interestAmount =
+            (runningAmount * (rateInterest / 100) * numOfDays) / 365;
+          penalAmount =
+            (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+          cumInterest += interestAmount;
+          cumPenal += penalAmount;
 
-        //append these values to result
-        addResult(
-          0,
-          currentDate,
-          numOfDays,
-          principleAmount,
-          interestAmount,
-          cumInterest,
-          penalAmount,
-          cumPenal
-        );
+          //append these values to result
+          addResult(
+            0,
+            currentDate,
+            numOfDays,
+            principleAmount,
+            interestAmount,
+            cumInterest,
+            penalAmount,
+            cumPenal
+          );
 
-        runningAmount = principleAmount + interestAmount;
+          runningAmount = principleAmount + interestAmount;
+        }
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       if (currentInstallmentNum === 0) {
