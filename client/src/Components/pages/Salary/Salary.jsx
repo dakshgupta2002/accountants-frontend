@@ -3,6 +3,8 @@ import "../../stylesheets/Salary.css";
 import logo from "../../../assets/logos/3d.jpg";
 import { Button } from "@mui/material";
 import InputEmployee from "./InputEmployee";
+import ReactToPdf from "react-to-pdf";
+import { useRef } from "react";
 
 export default function Salary() {
   const [month, setMonth] = useState("May");
@@ -22,6 +24,7 @@ export default function Salary() {
   const [providentFund, setProvidentFund] = useState("");
   const [insurance, setInsurance] = useState("");
 
+  const body = useRef();
   return (
     <div>
       <div className="operations">
@@ -64,9 +67,11 @@ export default function Salary() {
 
         <Button>Save Employee</Button>
 
-        <Button></Button>
+        <ReactToPdf targetRef={body} filename={`${name}-${month}-${id}`}>
+          {({ toPdf }) => <Button variant="contained" color="secondary" onClick={toPdf}>Generate pdf</Button>}
+        </ReactToPdf>
       </div>
-      <div className="body">
+      <div className="body" ref={body}>
         <div className="watermark">
           <div>
             <b>3D Consult Services (opc) Private Limited</b>
