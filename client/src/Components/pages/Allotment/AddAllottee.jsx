@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalContainer } from "../sections";
+import { ModalContainer } from "../../sections";
 import { TextField, MenuItem } from "@mui/material";
 
 export default function AddAllottee({

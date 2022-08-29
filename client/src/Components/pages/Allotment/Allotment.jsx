@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import Header from "../Header";
-import "../stylesheets/Allotment.css";
-import { seperator, round } from "../../utils/numberFormat";
-import { CreateAllotment, UpdateAllotment } from "../../Api/Allotment";
+import Header from "../../Header";
+import "../../stylesheets/Allotment.css";
+import { seperator, round } from "../../../utils/numberFormat";
+import { CreateAllotment, UpdateAllotment } from "../../../Api/Allotment";
 import { toast } from "react-toastify";
 import SavedAllotments from "./SavedAllotments";
-import Data from "../elements/Data";
-import EditPayment from "../elements/EditPayment";
+import Data from "../../elements/Data";
+import EditPayment from "../../elements/EditPayment";
 import AddAllottee from "./AddAllottee";
 import AddPayment from "./AddPayment";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
@@ -35,6 +35,23 @@ export default function Allotment() {
   let principleTimespanTemp = [];
   let installmentsScheduleTemp = [];
 
+  const givePenalty = (currentDate, runningAmount) => {
+    const a = new Date(currentDate);
+    const b = new Date(allotmentDate);
+    const numOfMonths = (a.getMonth() - b.getMonth()) + 12*(a.getFullYear() - b.getFullYear());
+    const installmentsPassed = Math.floor(numOfMonths / 6);
+
+    // if all installments should have been paid
+    if (installmentsPassed > installmentsNumber) return true;
+
+    // find the value that should have been left
+    let principleAmount = amountPrice * (1 - downPayment / 100);
+    const amountThatShouldBeLeft = Math.floor(
+      principleAmount * (1 - installmentsPassed / installmentsNumber)
+    );
+    console.log({currentDate, allotmentDate, numOfMonths, installmentsPassed, amountThatShouldBeLeft, runningAmount})
+    return amountThatShouldBeLeft < runningAmount;
+  };
   const scheduleInstallmentsDisplay = () => {
     setInstallmentsSchedule([]);
     installmentsScheduleTemp = [];
@@ -130,6 +147,7 @@ export default function Allotment() {
         currentDate.setDate(1);
       }
 
+      // console.log(givePenalty(currentDate, runningAmount));
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       if (currentDate.getTime() > today) {
@@ -146,7 +164,11 @@ export default function Allotment() {
           (currentDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
         interestAmount =
           (runningAmount * (rateInterest / 100) * numOfDays) / 365;
-        penalAmount = (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+
+        penalAmount =
+          givePenalty(currentDate, runningAmount) === true
+            ? (runningAmount * (penalInterest / 100) * numOfDays) / 365
+            : 0;
 
         cumInterest += interestAmount;
         cumPenal += penalAmount;
@@ -177,7 +199,9 @@ export default function Allotment() {
               (1000 * 60 * 60 * 24);
 
             penalAmount =
-              (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+              givePenalty(paymentDate, runningAmount) === true
+                ? (runningAmount * (penalInterest / 100) * numOfDays) / 365
+                : 0;
 
             interestAmount =
               (runningAmount * (rateInterest / 100) * numOfDays) / 365;
@@ -263,7 +287,9 @@ export default function Allotment() {
               (currentDate.getTime() - beginDate.getTime()) /
               (1000 * 60 * 60 * 24);
             penalAmount =
-              (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+              givePenalty(currentDate, runningAmount) === true
+                ? (runningAmount * (penalInterest / 100) * numOfDays) / 365
+                : 0;
             interestAmount =
               (runningAmount * (rateInterest / 100) * numOfDays) / 365;
             cumInterest += interestAmount;
@@ -333,7 +359,9 @@ export default function Allotment() {
           interestAmount =
             (runningAmount * (rateInterest / 100) * numOfDays) / 365;
           penalAmount =
-            (runningAmount * (penalInterest / 100) * numOfDays) / 365;
+            givePenalty(currentDate, runningAmount) === true
+              ? (runningAmount * (penalInterest / 100) * numOfDays) / 365
+              : 0;
           cumInterest += interestAmount;
           cumPenal += penalAmount;
 

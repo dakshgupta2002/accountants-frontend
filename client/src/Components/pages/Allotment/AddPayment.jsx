@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ModalContainer } from "../sections";
+import { ModalContainer } from "../../sections";
 import { Button, TextField } from "@mui/material";
 
 export default function AddPayment({
