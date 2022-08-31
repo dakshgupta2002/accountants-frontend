@@ -44,7 +44,6 @@ export default function InputEmployee({
     const emp = await GetEmployee(id);
     if (emp?.msg === 'NULL'){
       window.alert("No employee of this code found")
-      setIsSearchOpen(false);
     }else{
       setMonth(emp.month)
       setYear(emp.year)
@@ -62,6 +61,8 @@ export default function InputEmployee({
       setSpecialAllowance(emp.specialAllowance)
       setProvidentFund(emp.providentFund)
       setInsurance(emp.insurance)
+
+      setIsSearchOpen(false);
     }
   }
 

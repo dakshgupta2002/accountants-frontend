@@ -6,6 +6,7 @@ import InputEmployee from "./InputEmployee";
 import ReactToPdf from "react-to-pdf";
 import { useRef } from "react";
 import { PostEmployee } from "../../../Api/Salary";
+import Header from "../../Header";
 
 export default function Salary() {
   const [month, setMonth] = useState("May");
@@ -20,10 +21,10 @@ export default function Salary() {
   const [PAN, setPAN] = useState("");
   const [bank, setBank] = useState("");
   const [ESI, setESI] = useState("");
-  const [basic, setBasic] = useState("");
-  const [specialAllowance, setSpecialAllowance] = useState("");
-  const [providentFund, setProvidentFund] = useState("");
-  const [insurance, setInsurance] = useState("");
+  const [basic, setBasic] = useState(0);
+  const [specialAllowance, setSpecialAllowance] = useState(0);
+  const [providentFund, setProvidentFund] = useState(0);
+  const [insurance, setInsurance] = useState(0);
 
   const body = useRef();
 
@@ -44,14 +45,15 @@ export default function Salary() {
       basic,
       specialAllowance,
       providentFund,
-      insurance
+      insurance,
     });
-    console.log(res);
-    //save all data of this employee
+
+    window.alert("Employee Details saved/updated.");
   };
 
   return (
     <div>
+      <Header />
       <div className="operations">
         <InputEmployee
           month={month}
@@ -112,7 +114,7 @@ export default function Salary() {
         </div>
         <div>
           <p>
-            Payslip for the month of : {month} -{year}
+            Payslip for the month of : {month} - {year}
           </p>
           <div className="details">
             <div className="detailBox detailBoxOne">
@@ -144,12 +146,17 @@ export default function Salary() {
             </div>
             <hr />
             <div>
-              <div>BASIC {basic}</div>
-              <div>Special Allowance {specialAllowance}</div>
+              <div className="value">
+                <span>BASIC</span> <span>{basic}</span>
+              </div>
+              <div className="value">
+                <span>Special Allowance</span>
+                <span>{specialAllowance}</span>
+              </div>
             </div>
             <hr />
 
-            <p>Total (Rs.) {basic + specialAllowance}</p>
+            <p>Total (Rs.) {parseInt(basic) + parseInt(specialAllowance)}</p>
           </div>
           <div className="deduction records">
             <div className="info">
@@ -163,17 +170,25 @@ export default function Salary() {
             <hr />
 
             <div>
-              <div>Provident Fund {providentFund}</div>
-              <div>Employee State Insurance {insurance}</div>
+              <div className="value">
+                <span>Provident Fund</span> <span>{providentFund}</span>
+              </div>
+              <div className="value">
+                <span>Employee State Insurance</span> <span>{insurance}</span>
+              </div>
             </div>
             <hr />
 
-            <p>Total (Rs.) {providentFund + insurance}</p>
+            <p>Total (Rs.) {parseInt(providentFund) + parseInt(insurance)}</p>
           </div>
         </div>
 
         <h4 className="amount">
-          Net Amount: {basic + specialAllowance - providentFund - insurance}
+          Net Amount:{" "}
+          {parseInt(basic) +
+            parseInt(specialAllowance) -
+            parseInt(providentFund) -
+            parseInt(insurance)}
         </h4>
       </div>
     </div>

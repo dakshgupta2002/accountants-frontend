@@ -77,6 +77,8 @@ salaryRouter.route('/:id')
             res.status(200).json(oldEmp);
             return;
         }
+
+        res.status(400)
     })
 
 
