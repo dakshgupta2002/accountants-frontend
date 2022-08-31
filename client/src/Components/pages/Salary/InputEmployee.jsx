@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ModalContainer } from "../../sections";
 import { Button, TextField } from "@mui/material";
+import { GetEmployee } from "../../../Api/Salary";
 
 export default function InputEmployee({
   month,
@@ -36,19 +37,105 @@ export default function InputEmployee({
   setProvidentFund,
   setInsurance,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isInputOpen, setIsInputOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const searchEmp = async () => {
+    const emp = await GetEmployee(id);
+    if (emp?.msg === 'NULL'){
+      window.alert("No employee of this code found")
+      setIsSearchOpen(false);
+    }else{
+      setMonth(emp.month)
+      setYear(emp.year)
+      setId(emp.code)
+      setName(emp.name)
+      setDesignation(emp.designation)
+      setDepartment(emp.department)
+      setLocation(emp.location)
+      setPFAccount(emp.PFAccount)
+      setUAN(emp.UAN)
+      setPAN(emp.PAN)
+      setBank(emp.bank)
+      setESI(emp.ESI)
+      setBasic(emp.basic)
+      setSpecialAllowance(emp.specialAllowance)
+      setProvidentFund(emp.providentFund)
+      setInsurance(emp.insurance)
+    }
+  }
 
   return (
     <>
       <Button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsInputOpen(true)}
         variant="contained"
         color="warning"
       >
         Add Employee
       </Button>
-      <ModalContainer isOpen={isOpen} close={() => setIsOpen(false)}>
+
+      <Button
+        onClick={() => setIsSearchOpen(true)}
+        variant="contained"
+        color="warning"
+      >
+        Import Employee
+      </Button>
+
+      <ModalContainer
+        isOpen={isSearchOpen}
+        close={() => setIsSearchOpen(false)}
+      >
+        <TextField
+          type="text"
+          InputLabelProps={{ shrink: true }}
+          margin="dense"
+          fullWidth
+          label="Search Employee Code"
+          value={id}
+          onChange={(e) => {
+            setId(e.target.value);
+          }}
+        />
+
+        <Button
+          fullWidth
+          variant="contained"
+          color="success"
+          onClick={searchEmp}
+          margin="dense"
+        >
+          Search
+        </Button>
+      </ModalContainer>
+
+      <ModalContainer isOpen={isInputOpen} close={() => setIsInputOpen(false)}>
         <div>
+          <TextField
+            type="text"
+            InputLabelProps={{ shrink: true }}
+            margin="dense"
+            fullWidth
+            label="Month"
+            value={month}
+            onChange={(e) => {
+              setMonth(e.target.value);
+            }}
+          />
+
+          <TextField
+            type="number"
+            InputLabelProps={{ shrink: true }}
+            margin="dense"
+            fullWidth
+            label="Year"
+            value={year}
+            onChange={(e) => {
+              setYear(e.target.value);
+            }}
+          />
+
           <h4>Employee Details</h4>
           <TextField
             type="text"
@@ -230,7 +317,7 @@ export default function InputEmployee({
           fullWidth
           variant="contained"
           color="success"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsInputOpen(false)}
         >
           Done!
         </Button>

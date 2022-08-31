@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import InputEmployee from "./InputEmployee";
 import ReactToPdf from "react-to-pdf";
 import { useRef } from "react";
+import { PostEmployee } from "../../../Api/Salary";
 
 export default function Salary() {
   const [month, setMonth] = useState("May");
@@ -25,6 +26,30 @@ export default function Salary() {
   const [insurance, setInsurance] = useState("");
 
   const body = useRef();
+
+  const save = async () => {
+    //send api call on backend
+    const res = await PostEmployee(id, {
+      month,
+      year,
+      name,
+      designation,
+      department,
+      location,
+      PFAccount,
+      UAN,
+      PAN,
+      bank,
+      ESI,
+      basic,
+      specialAllowance,
+      providentFund,
+      insurance
+    });
+    console.log(res);
+    //save all data of this employee
+  };
+
   return (
     <div>
       <div className="operations">
@@ -63,12 +88,16 @@ export default function Salary() {
           setInsurance={setInsurance}
         />
 
-        <Button>Import Employee</Button>
-
-        <Button>Save Employee</Button>
+        <Button color="success" variant="contained" onClick={save}>
+          Save Employee
+        </Button>
 
         <ReactToPdf targetRef={body} filename={`${name}-${month}-${id}`}>
-          {({ toPdf }) => <Button variant="contained" color="secondary" onClick={toPdf}>Generate pdf</Button>}
+          {({ toPdf }) => (
+            <Button variant="contained" color="secondary" onClick={toPdf}>
+              Generate pdf
+            </Button>
+          )}
         </ReactToPdf>
       </div>
       <div className="body" ref={body}>
