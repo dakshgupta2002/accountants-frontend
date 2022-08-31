@@ -1,15 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const salarySchema = new Schema({
-    id: {
+    code: {
         type: String,
         unique: true,
         required: true
     },
-    name: String,
     month: String,
     year: String,
-    id: String,
     name: String,
     designation: String,
     department: String,
@@ -22,7 +21,8 @@ const salarySchema = new Schema({
     basic: String,
     specialAllowance: String,
     providentFund: String,
-    insurance: String,
+    insurance: String
 });
 
-export default mongoose.model("Salary", salarySchema);
+const Salary = mongoose.model("Salary", salarySchema);
+export default Salary;
