@@ -25,6 +25,7 @@ export default function Salary() {
   const [specialAllowance, setSpecialAllowance] = useState(0);
   const [providentFund, setProvidentFund] = useState(0);
   const [insurance, setInsurance] = useState(0);
+  const [reimburse, setReimburse] = useState(0);
 
   const body = useRef();
 
@@ -72,6 +73,7 @@ export default function Salary() {
           specialAllowance={specialAllowance}
           providentFund={providentFund}
           insurance={insurance}
+          reimburse={reimburse}
           setMonth={setMonth}
           setYear={setYear}
           setId={setId}
@@ -88,6 +90,7 @@ export default function Salary() {
           setSpecialAllowance={setSpecialAllowance}
           setProvidentFund={setProvidentFund}
           setInsurance={setInsurance}
+          setReimburse={setReimburse}
         />
 
         <Button color="success" variant="contained" onClick={save}>
@@ -103,6 +106,7 @@ export default function Salary() {
         </ReactToPdf>
       </div>
       <div className="body" ref={body}>
+        
         <div className="watermark">
           <div>
             <b>3D Consult Services (opc) Private Limited</b>
@@ -153,10 +157,14 @@ export default function Salary() {
                 <span>Special Allowance</span>
                 <span>{specialAllowance}</span>
               </div>
+              <div className="value">
+                <span>Reimbursement</span>
+                <span>{reimburse}</span>
+              </div>
             </div>
             <hr />
 
-            <p>Total (Rs.) {parseInt(basic) + parseInt(specialAllowance)}</p>
+            <p>Total (Rs.) {parseInt(basic) + parseInt(specialAllowance) + parseInt(reimburse)} </p>
           </div>
           <div className="deduction records">
             <div className="info">
@@ -176,6 +184,7 @@ export default function Salary() {
               <div className="value">
                 <span>Employee State Insurance</span> <span>{insurance}</span>
               </div>
+              <br/>
             </div>
             <hr />
 
@@ -186,7 +195,8 @@ export default function Salary() {
         <h4 className="amount">
           Net Amount:{" "}
           {parseInt(basic) +
-            parseInt(specialAllowance) -
+            parseInt(specialAllowance) +
+            parseInt(reimburse) -
             parseInt(providentFund) -
             parseInt(insurance)}
         </h4>

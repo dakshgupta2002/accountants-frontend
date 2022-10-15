@@ -36,11 +36,13 @@ export default function InputEmployee({
   setSpecialAllowance,
   setProvidentFund,
   setInsurance,
+  reimburse,
+  setReimburse
 }) {
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const searchEmp = async () => {
+  const searchEmpByCode = async () => {
     const emp = await GetEmployee(id);
     if (emp?.msg === 'NULL'){
       window.alert("No employee of this code found")
@@ -104,7 +106,7 @@ export default function InputEmployee({
           fullWidth
           variant="contained"
           color="success"
-          onClick={searchEmp}
+          onClick={searchEmpByCode}
           margin="dense"
         >
           Search
@@ -281,6 +283,17 @@ export default function InputEmployee({
             value={specialAllowance}
             onChange={(e) => {
               setSpecialAllowance(e.target.value);
+            }}
+          />
+          <TextField
+            type="text"
+            InputLabelProps={{ shrink: true }}
+            margin="dense"
+            fullWidth
+            label="Reimburse"
+            value={reimburse}
+            onChange={(e) => {
+              setReimburse(e.target.value);
             }}
           />
         </div>
