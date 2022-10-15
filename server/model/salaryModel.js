@@ -21,7 +21,8 @@ const salarySchema = new Schema({
     basic: String,
     specialAllowance: String,
     providentFund: String,
-    insurance: String
+    insurance: String,
+    reimburse: String
 });
 
 const Salary = mongoose.model("Salary", salarySchema);

@@ -47,6 +47,7 @@ export default function Salary() {
       specialAllowance,
       providentFund,
       insurance,
+      reimburse
     });
 
     window.alert("Employee Details saved/updated.");

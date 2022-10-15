@@ -63,7 +63,7 @@ export default function InputEmployee({
       setSpecialAllowance(emp.specialAllowance)
       setProvidentFund(emp.providentFund)
       setInsurance(emp.insurance)
-
+      setReimburse(emp.reimburse)
       setIsSearchOpen(false);
     }
   }
