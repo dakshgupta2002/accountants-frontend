@@ -1,0 +1,57 @@
+.operations{
+    align-self: right;
+    margin: 1rem 0px;
+}
+
+.body{
+    width: 180mm;
+    height: 297mm;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10mm 15mm 10mm 15mm;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17.5px;
+}
+
+.watermark, .info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo{
+    height: 6em;
+}
+
+.details, .salary{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.detailBox, .records{
+    border: 3px solid black;
+    width: 50%;
+}
+
+.detailBoxOne, .earning{
+    border-right: none;
+}
+
+.records, .detailBox{
+    padding: 10px;
+}
+
+.amount{
+    border: 3px solid black;
+    border-top: none;
+    text-align: right;
+    padding: 10px;
+}
+
+.value{
+    display: flex;
+    justify-content: space-between;
+}

@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { removeAccount } from '../Api/User';
 
-const pages = ['Allotment'];
+const pages = ['Salary', 'Allotment'];
 
 export default function Header() {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ export default function Header() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={ handleCloseNavMenu}>
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography onClick={(e) =>navigate(`/${page.toLowerCase()}`)} textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}

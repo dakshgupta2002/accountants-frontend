@@ -7,7 +7,8 @@ import Error from "./Components/pages/Error";
 import Verify from "./Components/User/Verify";
 import Create from "./Components/User/Create";
 import { ToastContainer } from "react-toastify";
-import Allotment from "./Components/pages/Allotment.jsx";
+import Allotment from "./Components/pages/Allotment/Allotment.jsx";
+import Salary from "./Components/pages/Salary/Salary.jsx";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
 
           <Route exact path="/" element={<Home />} />
           <Route path="/allotment" element={<Allotment/>} />
+
+          <Route exact path="/salary" element={<Salary/>} />
 
           <Route path="*" element={<Error />} />
         </Routes>

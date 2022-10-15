@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ModalContainer } from "../sections";
+import { ModalContainer } from "../../sections";
 import { Button, TextField } from "@mui/material";
 
 export default function AddPayment({
@@ -19,7 +19,9 @@ export default function AddPayment({
         paymentDate,
         paymentAmount,
       },
-    ]);
+    ].sort( (a,b) => {
+      return new Date(a.paymentDate).getTime() - new Date(b.paymentDate).getTime();
+    }));
 
     close();
   };

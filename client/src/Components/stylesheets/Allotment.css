@@ -13,11 +13,9 @@
 }
 
 .buttonContainer{
-    width: 95%;
-    max-width: 900px;
+    width: 100%;
     display: flex;
-    justify-content: right;
-    margin: 40px 0px 10px 0px;
+    justify-content: space-around;   
 }
 .payments{
     width: 95%;
