@@ -1,4 +1,5 @@
-const BASE_URL = "https://theaccountants.herokuapp.com"
+// const BASE_URL = "http://localhost:5000"
+const BASE_URL = "https://expressjs-mongoose-production-10e6.up.railway.app"
 
 export const post = async (method, url, data = null) => {
     const URL = `${BASE_URL}/${url}`;

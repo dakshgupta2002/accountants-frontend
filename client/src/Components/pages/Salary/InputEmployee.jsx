@@ -47,6 +47,8 @@ export default function InputEmployee({
     if (emp?.msg === 'NULL'){
       window.alert("No employee of this code found")
     }else{
+      console.log(emp)
+      console.log(emp.Reimbursement)
       setMonth(emp.month)
       setYear(emp.year)
       setId(emp.code)
@@ -63,7 +65,7 @@ export default function InputEmployee({
       setSpecialAllowance(emp.specialAllowance)
       setProvidentFund(emp.providentFund)
       setInsurance(emp.insurance)
-      setReimburse(emp.reimburse)
+      if (emp.Reimbursement) setReimburse(emp.Reimbursement)
       setIsSearchOpen(false);
     }
   }
