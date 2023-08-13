@@ -1,4 +1,4 @@
-import { get, post } from "./rest";
+    import { get, post } from "./rest";
 
 export const GetEmployee = async (id) => {
     const res = await get(`salary/${id}`);
