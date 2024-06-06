@@ -23,7 +23,7 @@
     "react-scripts": "*",
     "react-to-pdf": "*",
     "react-toastify": "*",
-    "surge": "*",
+    "surge": "^0.23.1",
     "web-vitals": "*"
   },
   "scripts": {

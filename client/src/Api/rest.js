@@ -1,4 +1,4 @@
-const BASE_URL = "https://filthy-housecoat-hen.cyclic.app"
+const BASE_URL = "https://accountants-backend.onrender.com"
 
 export const post = async (method, url, data = null) => {
     const URL = `${BASE_URL}/${url}`;
