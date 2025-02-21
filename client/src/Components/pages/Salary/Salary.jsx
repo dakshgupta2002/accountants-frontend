@@ -183,7 +183,7 @@ export default function Salary() {
                 <span>Provident Fund</span> <span>{providentFund}</span>
               </div>
               <div className="value">
-                <span>Employee State Insurance</span> <span>{insurance}</span>
+                <span>Employee State Insurance / Health Insurance</span> <span>{insurance}</span>
               </div>
               <br/>
             </div>
