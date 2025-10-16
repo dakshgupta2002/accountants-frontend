@@ -26,6 +26,7 @@ export default function Salary() {
   const [providentFund, setProvidentFund] = useState(0);
   const [insurance, setInsurance] = useState(0);
   const [reimburse, setReimburse] = useState(0);
+  const [advancePaid, setAdvancePaid] = useState(0);
 
   const body = useRef();
 
@@ -92,6 +93,7 @@ export default function Salary() {
           setProvidentFund={setProvidentFund}
           setInsurance={setInsurance}
           setReimburse={setReimburse}
+          setAdvancePaid={setAdvancePaid}
         />
 
         <Button color="success" variant="contained" onClick={save}>
@@ -185,11 +187,14 @@ export default function Salary() {
               <div className="value">
                 <span>Employee State Insurance / Health Insurance</span> <span>{insurance}</span>
               </div>
+              <div className="value">
+                <span>Less: Advance paid if any</span> <span>{advancePaid}</span>
+              </div>
               <br/>
             </div>
             <hr />
 
-            <p>Total (Rs.) {parseInt(providentFund) + parseInt(insurance)}</p>
+            <p>Total (Rs.) {parseInt(providentFund) + parseInt(insurance) + parseInt(advancePaid)}</p>
           </div>
         </div>
 
@@ -199,7 +204,8 @@ export default function Salary() {
             parseInt(specialAllowance) +
             parseInt(reimburse) -
             parseInt(providentFund) -
-            parseInt(insurance)}
+            parseInt(insurance) -
+            parseInt(advancePaid)}
         </h4>
       </div>
     </div>

@@ -37,7 +37,8 @@ export default function InputEmployee({
   setProvidentFund,
   setInsurance,
   reimburse,
-  setReimburse
+  setReimburse,
+  setAdvancePaid,
 }) {
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function InputEmployee({
       setInsurance(emp.insurance)
       setReimburse(emp.reimburse)
       setIsSearchOpen(false);
+      setAdvancePaid(emp.advancePaid);
     }
   }
 
